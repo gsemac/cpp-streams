@@ -118,10 +118,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Exception.h" />
+    <ClInclude Include="FileStream.h" />
     <ClInclude Include="MemoryStream.h" />
     <ClInclude Include="Stream.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Exception.cc" />
+    <ClCompile Include="FileStream.cc" />
     <ClCompile Include="main.cc" />
     <ClCompile Include="MemoryStream.cc" />
     <ClCompile Include="Stream.cc" />

@@ -16,7 +16,7 @@ namespace IO {
 		virtual ~MemoryStream();
 
 		// Gets the length of the stream in bytes.
-		virtual size_t Length() const override;
+		virtual size_t Length() override;
 		// Gets the number of bytes allocated for this stream.
 		virtual size_t Capacity() const;
 		// Gets the current position within the stream.
@@ -27,22 +27,22 @@ namespace IO {
 		virtual void Flush() override;
 		// Sets the length of the current stream to the specified value.
 		virtual void SetLength(size_t length) override;
-		// Writes a byte to the current stream at the current position.
-		virtual void WriteByte(Byte byte) override;
 		// Reads a byte from the stream and advances the position within the stream by one byte, or returns false if at the end of the stream.
 		virtual bool ReadByte(Byte& byte) override;
+		// Writes a byte to the current stream at the current position.
+		virtual void WriteByte(Byte byte) override;
 		// Reads a block of bytes from the current stream and writes the data to a buffer.
 		virtual size_t Read(void* buffer, size_t offset, size_t length) override;
 		// Writes a block of bytes to the current stream using data read from a buffer.
 		virtual void Write(const void* buffer, size_t offset, size_t length) override;
-		// Closes the current stream and releases any resources (such as sockets and file handles) associated with the current stream. Instead of calling this method, ensure that the stream is properly disposed.
+		// Closes the current stream and releases any resources (such as sockets and file handles) associated with the current stream.
 		virtual void Close() override;
 		// Reads the bytes from the current stream and writes them to another stream.
 		virtual void CopyTo(Stream& stream) override;
 		// Reads the bytes from the current stream and writes them to another stream, using a specified buffer size.
 		virtual void CopyTo(Stream& stream, size_t size) override;
 		// Sets the position within the current stream to the specified value.
-		virtual void Seek(size_t offset, SeekOrigin origin) override;
+		virtual void Seek(long offset, SeekOrigin origin) override;
 		// Gets a value indicating whether the current stream supports reading.
 		virtual bool CanRead() const;
 		// Gets a value indicating whether the current stream supports seeking.

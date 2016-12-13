@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Exceptions">
+      <UniqueIdentifier>{ad029385-5590-4655-b8f2-f00005cccebf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Exceptions">
+      <UniqueIdentifier>{91094b62-a5fd-4126-9f2e-f30393b78381}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Stream.h">
@@ -20,6 +26,12 @@
     </ClInclude>
     <ClInclude Include="MemoryStream.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FileStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception.h">
+      <Filter>Header Files\Exceptions</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -31,6 +43,12 @@
     </ClCompile>
     <ClCompile Include="Stream.cc">
       <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FileStream.cc">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception.cc">
+      <Filter>Resource Files\Exceptions</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

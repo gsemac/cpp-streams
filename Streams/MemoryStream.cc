@@ -24,13 +24,11 @@ namespace IO {
 	}
 	MemoryStream::~MemoryStream() {
 
-		if (__buffer)
-			free(__buffer);
-		__buffer = nullptr;
+		Close();
 
 	}
 
-	size_t MemoryStream::Length() const {
+	size_t MemoryStream::Length() {
 
 		return __length;
 
@@ -70,26 +68,6 @@ namespace IO {
 			__position = __length;
 
 	}
-	void MemoryStream::WriteByte(Byte byte) {
-		assert(CanWrite());
-
-		// Get the number of bytes required to store the data.
-		size_t bytes = sizeof(Byte);
-
-		// Make enough room in the buffer for new data.
-		Allocate(bytes);
-
-		// Copy the data to the buffer.
-		memcpy(__buffer + __position * bytes, &byte, bytes);
-
-		// Move the seek position forward by the number of bytes written.
-		__position += bytes;
-
-		// If the stream is now longer, increase the length.
-		if (__position > __length)
-			__length = __position;
-
-	}
 	bool MemoryStream::ReadByte(Byte& byte) {
 		assert(CanRead());
 
@@ -108,6 +86,26 @@ namespace IO {
 
 		// A byte was successfully read, so return true.
 		return true;
+
+	}
+	void MemoryStream::WriteByte(Byte byte) {
+		assert(CanWrite());
+
+		// Get the number of bytes required to store the data.
+		size_t bytes = sizeof(Byte);
+
+		// Make enough room in the buffer for new data.
+		Allocate(bytes);
+
+		// Copy the data to the buffer.
+		memcpy(__buffer + __position * bytes, &byte, bytes);
+
+		// Move the seek position forward by the number of bytes written.
+		__position += bytes;
+
+		// If the stream is now longer, increase the length.
+		if (__position > __length)
+			__length = __position;
 
 	}
 	size_t MemoryStream::Read(void* buffer, size_t offset, size_t length) {
@@ -151,6 +149,10 @@ namespace IO {
 	}
 	void MemoryStream::Close() {
 
+		if (__buffer)
+			free(__buffer);
+		__buffer = nullptr;
+
 	}
 	void MemoryStream::CopyTo(Stream& stream) {
 		assert(CanRead());
@@ -166,23 +168,33 @@ namespace IO {
 		__position += size;
 
 	}
-	void MemoryStream::Seek(size_t offset, SeekOrigin origin) {
+	void MemoryStream::Seek(long offset, SeekOrigin origin) {
 		assert(CanSeek());
 
 		switch (origin) {
 		case SeekOrigin::Begin:
-			__position = offset;
+			if (offset < 0)
+				__position = 0;
+			else if (offset > __length)
+				__position = __length;
+			else
+				__position = (size_t)offset;
 			break;
 		case SeekOrigin::Current:
-			__position += offset;
+			if (offset + __position < 0)
+				__position = 0;
+			else if (offset + __position > __length)
+				__position = __length;
+			else
+				__position = (size_t)(offset + __position);
 			break;
 		case SeekOrigin::End:
-			__position = __length + offset;
+			if (offset >= 0)
+				__position = __length;
+			else 
+				__position = (size_t)(offset + __length);
 			break;
 		}
-
-		__position = (std::max)(__position, (size_t)0);
-		__position = (std::min)(__position, Length());
 
 	}
 	bool MemoryStream::CanRead() const {
