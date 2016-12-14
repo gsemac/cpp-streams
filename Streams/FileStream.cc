@@ -35,7 +35,7 @@ namespace IO {
 		// If the stream is in "Append" mode, just return the current position (guaranteed to be at the end of the stream).
 		if (__flags & std::fstream::app)
 			return __position;
-		
+
 		// If the stream does not support reading, throw an error.
 		if (!CanRead())
 			throw NotSupportedException();
@@ -65,7 +65,10 @@ namespace IO {
 
 	}
 	void FileStream::SetLength(size_t length) {
-		assert(CanWrite() && CanSeek());
+
+		// Throw error if the stream does not support writing or seeking.
+		if (!CanWrite() || !CanSeek())
+			throw NotSupportedException();
 
 		// Get the current length.
 		size_t clength = Length();
@@ -102,7 +105,12 @@ namespace IO {
 
 	}
 	bool FileStream::ReadByte(Byte& byte) {
-		assert(CanRead());
+
+		// Throw an exception of the stream is not readable.
+		if (!CanRead())
+			throw NotSupportedException();
+
+		// If the last action was not a read, seek to refresh the stream.
 		if (!__last_read) __stream.seekg(__position);
 		__last_read = true;
 
@@ -123,7 +131,12 @@ namespace IO {
 
 	}
 	void FileStream::WriteByte(Byte byte) {
-		assert(CanWrite());
+
+		// Throw an exception of the stream is not writeable.
+		if (!CanWrite())
+			throw NotSupportedException();
+
+		// If the last action was not a write, seek to refresh the stream.
 		if (__last_read) __stream.seekg(__position);
 		__last_read = false;
 
@@ -132,12 +145,19 @@ namespace IO {
 
 	}
 	size_t FileStream::Read(void* buffer, size_t offset, size_t length) {
-		if (!CanRead()) throw NotSupportedException();
 
+		// Throw an exception of the stream is not readable.
+		if (!CanRead())
+			throw NotSupportedException();
+
+		// If the last action was not a read, seek to refresh the stream.
 		if (!__last_read) __stream.seekg(__position);
 		__last_read = true;
 
+		// Write bytes from the stream to the buffer.
 		__stream.read((char*)buffer + offset * sizeof(Byte), length);
+
+		// Update the seek position.
 		size_t bytes_read = __stream.gcount();
 		__position += bytes_read;
 
@@ -145,27 +165,41 @@ namespace IO {
 
 	}
 	void FileStream::Write(const void* buffer, size_t offset, size_t length) {
-		assert(CanWrite());
+
+		// Throw an exception of the stream is not writeable.
+		if (!CanWrite())
+			throw NotSupportedException();
+
+		// If the last action was not a write, seek to refresh the stream.
 		if (__last_read) __stream.seekg(__position);
 		__last_read = false;
 
+		// Write bytes to the stream from the buffer.
 		__stream.write((const char*)buffer, length);
+
+		// Update the sek position.
 		__position += length;
 
 	}
 	void FileStream::Close() {
-	
+
 		if (__stream.is_open()) {
+			// Flush and close the stream if it is open.
 			__stream.flush();
 			__stream.close();
 		}
+
+		// Reset the seek position.
 		__position = 0;
 
 	}
 	void FileStream::Seek(long offset, SeekOrigin origin) {
-		if (!CanSeek()) throw IO::IOException();
 
-		// Note: For fstream, seekg and seekp refer to the same pointer, and do not need to be considered separately.
+		// Throw an exception of the stream is not seekable.
+		if (!CanSeek()) throw 
+			IO::IOException();
+
+		// For fstream, seekg and seekp refer to the same pointer, and do not need to be considered separately.
 
 		// Store the current stream position (to compute difference later).
 		std::streampos pos = __stream.tellg();
