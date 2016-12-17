@@ -1,6 +1,7 @@
 #include "FileStream.h"
 #include <cassert>
 #include <iostream>
+#include <algorithm>
 #include <sys/stat.h>
 
 namespace IO {
@@ -8,15 +9,17 @@ namespace IO {
 	FileStream::FileStream(const char* path, FileMode mode) : FileStream(path, mode, FileAccess::ReadWrite) {}
 	FileStream::FileStream(const char* path, FileMode mode, FileAccess access) {
 
+		// Initialize member variables.
+		__position = 0;
+		__path = path;
+		__last_read = false;
+
 		// Initialize flags.
 		InitFlags(mode, access);
 
 		// Open the file.
 		__stream.open(path, __flags);
-		__position = 0;
-		__path = path;
-		__last_read = false;
-
+	
 		// If opened in "Append" mode, seek to the end of the file.
 		if (__flags & std::fstream::app) {
 			__stream.seekg(0, std::ios_base::end);
@@ -77,20 +80,30 @@ namespace IO {
 
 			// Create a buffer, and copy into it the first length bytes of the file.
 			Byte* buf = new Byte[length];
+			size_t prev_pos = __position;
 			Seek(0, IO::SeekOrigin::Begin);
 			Read(buf, 0, length);
 
 			// Close the file stream.
-			Close();
+			__stream.flush();
+			__stream.close();
 
 			// Create a new file stream with the truncation flag.
-			unsigned int flags = std::fstream::out | std::fstream::trunc;
-			if (__flags & std::fstream::in) flags |= std::fstream::in;
-			__stream.open(__path, flags);
+			__stream.open(__path, std::fstream::out | std::fstream::trunc);
 
 			// Write the buffer back to the file, and free it.
+			__position = 0;
 			Write(buf, 0, length);
 			delete[] buf;
+
+			// Close the file.
+			__stream.flush();
+			__stream.close();
+
+			// Re-open the file with previous flags, and seek the former or truncated position.
+			__stream.open(__path, __flags);
+			__last_read = false;
+			__stream.seekg((std::min)(prev_pos, length));
 
 		}
 		else if (length > clength) {
@@ -183,20 +196,22 @@ namespace IO {
 	}
 	void FileStream::Close() {
 
+		// Flush and close the stream if it is open.
 		if (__stream.is_open()) {
-			// Flush and close the stream if it is open.
 			__stream.flush();
 			__stream.close();
 		}
 
-		// Reset the seek position.
+		// Reset the seek position and flags.
 		__position = 0;
+		__flags = 0;
+		__access_flags = 0;
 
 	}
 	void FileStream::Seek(long offset, SeekOrigin origin) {
 
 		// Throw an exception of the stream is not seekable.
-		if (!CanSeek()) throw 
+		if (!CanSeek()) throw
 			IO::IOException();
 
 		// For fstream, seekg and seekp refer to the same pointer, and do not need to be considered separately.
