@@ -40,9 +40,11 @@ namespace IO {
 		// Reads the bytes from the current stream and writes them to another stream.
 		virtual void CopyTo(Stream& stream);
 		// Reads the bytes from the current stream and writes them to another stream, using a specified buffer size.
-		virtual void CopyTo(Stream& stream, size_t size);
+		virtual void CopyTo(Stream& stream, size_t buffer_size);
 		// When overridden in a derived class, sets the position within the current stream.
-		virtual void Seek(long offset, SeekOrigin origin) = 0;
+		virtual size_t Seek(long long offset, SeekOrigin origin) = 0;
+		// When overridden in a derived class, sets the position within the current stream.
+		virtual size_t Seek(long long position) = 0;
 		// When overridden in a derived class, gets a value indicating whether the current stream supports reading.
 		virtual bool CanRead() const = 0;
 		// When overridden in a derived class, gets a value indicating whether the current stream supports seeking.

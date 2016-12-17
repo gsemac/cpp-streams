@@ -35,22 +35,40 @@ namespace IO {
 	class FileStream : public Stream {
 
 	public:
+		// Initializes a new instance of the FileStream class with the specified path and creation mode.
 		FileStream(const char* path, FileMode mode);
+		// Initializes a new instance of the FileStream class with the specified path, creation mode, and read/write permission.
 		FileStream(const char* path, FileMode mode, FileAccess access);
+		// Releases all resources used by the Stream.
 		~FileStream();
 
+		// Gets the length in bytes of the stream.
 		size_t Length() override;
+		// Gets the current position of this stream.
 		size_t Position() const override;
+		// Clears buffers for this stream and causes any buffered data to be written to the file.
 		virtual void Flush() override;
+		// Sets the length of this stream to the given value.
 		virtual void SetLength(size_t length) override;
+		// Reads a byte from the file and advances the read position one byte.
 		virtual bool ReadByte(Byte& byte) override;
+		// Writes a byte to the current position in the file stream.
 		virtual void WriteByte(Byte byte) override;
+		// Reads a block of bytes from the stream and writes the data in a given buffer.
 		virtual size_t Read(void* buffer, size_t offset, size_t length) override;
+		// Writes a block of bytes to the file stream.
 		virtual void Write(const void* buffer, size_t offset, size_t length) override;
+		// Closes the current stream and releases any resources associated with the current stream.
 		virtual void Close() override;
-		virtual void Seek(long offset, SeekOrigin origin) override;
+		// Sets the current position of this stream to the given value.
+		virtual size_t Seek(long long offset, SeekOrigin origin) override;
+		// Sets the current position of this stream to the given value.
+		virtual size_t Seek(long long position) override;
+		// Gets a value indicating whether the current stream supports reading.
 		virtual bool CanRead() const override;
+		// Gets a value indicating whether the current stream supports seeking.
 		virtual bool CanSeek() const override;
+		// Gets a value indicating whether the current stream supports writing.
 		virtual bool CanWrite() const override;
 
 	protected:
@@ -62,7 +80,9 @@ namespace IO {
 		bool __last_read;
 
 	private:
+		// Returns true if a file with the given path exists.
 		bool FileExists(const char* path);
+		// Initializes mode/access flag values.
 		void InitFlags(FileMode mode, FileAccess access);
 
 	};

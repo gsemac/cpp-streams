@@ -74,45 +74,39 @@ namespace IO {
 
 	}
 	bool MemoryStream::ReadByte(Byte& byte) {
-		
+
 		// Throw an exception of the stream is not readable.
 		if (!CanRead())
 			throw NotSupportedException();
 
-		// Get the number of bytes to read from the buffer.
-		size_t bytes = sizeof(Byte);
-
 		// Return false if the buffer does not contain enough bytes to read.
-		if (__position + bytes > __length)
+		if (__position + sizeof(Byte) > __length)
 			return false;
 
 		// Copy data from the buffer to the output memory.
-		memcpy(&byte, __buffer + __position * bytes, bytes);
+		memcpy(&byte, __buffer + __position * sizeof(Byte), sizeof(Byte));
 
 		// Move the seek position forward by the number of bytes written.
-		__position += bytes;
+		__position += sizeof(Byte);
 
 		// A byte was successfully read, so return true.
 		return true;
 
 	}
 	void MemoryStream::WriteByte(Byte byte) {
-	
+
 		// Throw an exception of the stream is not writeable.
 		if (!CanWrite())
 			throw NotSupportedException();
 
-		// Get the number of bytes required to store the data.
-		size_t bytes = sizeof(Byte);
-
 		// Make enough room in the buffer for new data.
-		Allocate(bytes);
+		AllocateBytes(sizeof(Byte));
 
 		// Copy the data to the buffer.
-		memcpy(__buffer + __position * bytes, &byte, bytes);
+		memcpy(__buffer + __position * sizeof(Byte), &byte, sizeof(Byte));
 
 		// Move the seek position forward by the number of bytes written.
-		__position += bytes;
+		__position += sizeof(Byte);
 
 		// If the stream is now longer, increase the length.
 		if (__position > __length)
@@ -120,7 +114,7 @@ namespace IO {
 
 	}
 	size_t MemoryStream::Read(void* buffer, size_t offset, size_t length) {
-		
+
 		// Throw an exception of the stream is not readable.
 		if (!CanRead())
 			throw NotSupportedException();
@@ -145,13 +139,13 @@ namespace IO {
 
 	}
 	void MemoryStream::Write(const void* buffer, size_t offset, size_t length) {
-		
+
 		// Throw an exception of the stream is not writeable.
 		if (!CanWrite())
 			throw NotSupportedException();
 
 		// Make enough room in the buffer for new data.
-		Allocate(length);
+		AllocateBytes(length);
 
 		// Copy memory from the input buffer to the internal buffer.
 		memcpy(__buffer + __position * sizeof(Byte), (Byte*)buffer + offset * sizeof(Byte), length);
@@ -172,55 +166,59 @@ namespace IO {
 
 	}
 	void MemoryStream::CopyTo(Stream& stream) {
-		
+
 		// Throw an exception of the stream is not readable.
 		if (!CanRead())
 			throw NotSupportedException();
 
-		stream.Write(__buffer, Position(), Length() - Position());
+		// If the seek position is greater than or equal to the length of the stream, do nothing.
+		if (__position >= __length)
+			return;
+
+		// Write remaining contents of the current stream to the other stream.
+		stream.Write(__buffer, __position, __length - __position);
 		__position = __length;
 
 	}
-	void MemoryStream::CopyTo(Stream& stream, size_t size) {
-
-		// Throw an exception of the stream is not readable.
-		if (!CanRead())
-			throw NotSupportedException();
-
-		stream.Write(__buffer, Position(), size);
-		__position += size;
+	void MemoryStream::CopyTo(Stream& stream, size_t buffer_size) {
+	
+		Stream::CopyTo(stream, buffer_size);
 
 	}
-	void MemoryStream::Seek(long offset, SeekOrigin origin) {
-	
+	size_t MemoryStream::Seek(long long offset, SeekOrigin origin) {
+
 		// Throw an exception of the stream is not seekable.
 		if (!CanSeek())
 			throw NotSupportedException();
 
+		// Get the origin position from the seek origin.
+		size_t origin_position;
 		switch (origin) {
 		case SeekOrigin::Begin:
-			if (offset < 0)
-				__position = 0;
-			else if (offset > __length)
-				__position = __length;
-			else
-				__position = (size_t)offset;
+			origin_position = 0;
 			break;
 		case SeekOrigin::Current:
-			if (offset + __position < 0)
-				__position = 0;
-			else if (offset + __position > __length)
-				__position = __length;
-			else
-				__position = (size_t)(offset + __position);
+			origin_position = __position;
 			break;
 		case SeekOrigin::End:
-			if (offset >= 0)
-				__position = __length;
-			else 
-				__position = (size_t)(offset + __length);
+			origin_position = __length;
 			break;
 		}
+
+		// Throw an error if the new position is less than 0.
+		if (offset + origin_position < 0)
+			throw IOException("An attempt was made to move the position before the beginning of the stream.");
+
+		// Apply the new position.
+		__position = (size_t)(offset + origin_position);
+
+		// Return the new position.
+		return __position;
+
+	}
+	size_t MemoryStream::Seek(long long position) {
+
+		return Seek(position, SeekOrigin::Begin);
 
 	}
 	bool MemoryStream::CanRead() const {
@@ -275,16 +273,19 @@ namespace IO {
 
 	}
 
-	void MemoryStream::Allocate(size_t bytes) {
+	void MemoryStream::AllocateBytes(size_t bytes) {
 
-		// Increase the size of the buffer if necessary.
-		if (__length + bytes > __capacity) {
+		// Calculate the required capacity. Note that the position may be greater than the length.
+		size_t required_capacity = (std::max)(__length, __position) + bytes;
+
+		// Increase buffer capacity if needed.
+		if (required_capacity > __capacity) {
 			size_t new_capacity = __capacity > 0 ? __capacity : 1;
-			while (__length + bytes > new_capacity)
+			while (required_capacity > new_capacity)
 				new_capacity *= 2;
 			Reserve(new_capacity);
 		}
-		
+
 	}
 
 }

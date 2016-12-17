@@ -1,5 +1,6 @@
 #pragma once
 #include "Stream.h"
+#include "Exception.h"
 #include <cassert>
 
 // The following definitions are defaults and should be overridden by the derived class to improve efficiency.
@@ -7,7 +8,9 @@
 namespace IO {
 
 	size_t Stream::Read(void* buffer, size_t offset, size_t length) {
-		assert(CanRead());
+		
+		if (!CanRead())
+			throw NotSupportedException();
 
 		Byte* addr = (Byte*)buffer + offset * sizeof(Byte);
 		
@@ -22,7 +25,9 @@ namespace IO {
 
 	}
 	void Stream::Write(const void* buffer, size_t offset, size_t length) {
-		assert(CanWrite());
+	
+		if (!CanWrite())
+			throw NotSupportedException();
 
 		Byte* addr = (Byte*)buffer + offset * sizeof(Byte);
 		
@@ -32,19 +37,31 @@ namespace IO {
 	}
 	void Stream::Close() {}
 	void Stream::CopyTo(Stream& stream) {
-		assert(CanRead());
+		
+		if (!CanRead() || !stream.CanWrite())
+			throw NotSupportedException();
 
 		Byte byte;
 		while (ReadByte(byte))
 			stream.WriteByte(byte);
 
 	}
-	void Stream::CopyTo(Stream& stream, size_t size) {
-		assert(CanRead());
+	void Stream::CopyTo(Stream& stream, size_t buffer_size) {
+		
+		// Throw an exception of the stream is not readable, or the output stream is not writeable.
+		if (!CanRead() || !stream.CanWrite())
+			throw NotSupportedException();
 
-		Byte byte;
-		for (size_t i = 0; i < size && ReadByte(byte); ++i)
-			stream.WriteByte(byte);
+		// Create a buffer of the required size.
+		Byte* buf = new Byte[buffer_size];
+
+		// Read/write until no more bytes can be read.
+		size_t bytes_read;
+		while (bytes_read = Read(buf, 0, buffer_size), bytes_read > 0) 
+			stream.Write(buf, 0, bytes_read);
+
+		// Dispose of the buffer.
+		delete[] buf;
 
 	}
 

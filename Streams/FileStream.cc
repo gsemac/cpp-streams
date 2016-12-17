@@ -207,7 +207,7 @@ namespace IO {
 		__access_flags = 0;
 
 	}
-	void FileStream::Seek(long offset, SeekOrigin origin) {
+	size_t FileStream::Seek(long long offset, SeekOrigin origin) {
 
 		// Throw an exception of the stream is not seekable.
 		if (!CanSeek()) throw
@@ -234,6 +234,14 @@ namespace IO {
 
 		// Adjust the seek position according to the difference.
 		__position += (__stream.tellg() - pos);
+
+		// Return the new position.
+		return __position;
+
+	}
+	size_t FileStream::Seek(long long position) {
+
+		return Seek(position, SeekOrigin::Begin);
 
 	}
 	bool FileStream::CanRead() const {

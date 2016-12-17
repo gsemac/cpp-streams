@@ -33,6 +33,9 @@
     <ClInclude Include="Exception.h">
       <Filter>Header Files\Exceptions</Filter>
     </ClInclude>
+    <ClInclude Include="BufferedStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cc">
@@ -49,6 +52,9 @@
     </ClCompile>
     <ClCompile Include="Exception.cc">
       <Filter>Resource Files\Exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="BufferedStream.cc">
+      <Filter>Resource Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

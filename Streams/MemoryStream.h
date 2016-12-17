@@ -40,9 +40,11 @@ namespace IO {
 		// Reads the bytes from the current stream and writes them to another stream.
 		virtual void CopyTo(Stream& stream) override;
 		// Reads the bytes from the current stream and writes them to another stream, using a specified buffer size.
-		virtual void CopyTo(Stream& stream, size_t size) override;
+		virtual void CopyTo(Stream& stream, size_t buffer_size) override;
 		// Sets the position within the current stream to the specified value.
-		virtual void Seek(long offset, SeekOrigin origin) override;
+		virtual size_t Seek(long long offset, SeekOrigin origin) override;
+		// Sets the position within the current stream to the specified value.
+		virtual size_t Seek(long long position) override;
 		// Gets a value indicating whether the current stream supports reading.
 		virtual bool CanRead() const;
 		// Gets a value indicating whether the current stream supports seeking.
@@ -57,7 +59,7 @@ namespace IO {
 		size_t __position;
 
 		// Expands the buffer to contain a specified number of additional bytes.
-		virtual void Allocate(size_t bytes);
+		virtual void AllocateBytes(size_t bytes);
 
 	private:
 		// Returns the underlying Byte buffer.
