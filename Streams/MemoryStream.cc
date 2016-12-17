@@ -1,4 +1,5 @@
 #include "MemoryStream.h"
+#include "Exception.h"
 #include <cstdlib>
 #include <cstring>
 #include <algorithm>
@@ -56,6 +57,10 @@ namespace IO {
 	}
 	void MemoryStream::SetLength(size_t length) {
 
+		// Throw error if the stream does not support writing or seeking.
+		if (!CanWrite() || !CanSeek())
+			throw NotSupportedException();
+
 		// If the new length is larger than the current capacity, resize the buffer.
 		if (length > __capacity)
 			Reserve(length);
@@ -69,7 +74,10 @@ namespace IO {
 
 	}
 	bool MemoryStream::ReadByte(Byte& byte) {
-		assert(CanRead());
+		
+		// Throw an exception of the stream is not readable.
+		if (!CanRead())
+			throw NotSupportedException();
 
 		// Get the number of bytes to read from the buffer.
 		size_t bytes = sizeof(Byte);
@@ -89,7 +97,10 @@ namespace IO {
 
 	}
 	void MemoryStream::WriteByte(Byte byte) {
-		assert(CanWrite());
+	
+		// Throw an exception of the stream is not writeable.
+		if (!CanWrite())
+			throw NotSupportedException();
 
 		// Get the number of bytes required to store the data.
 		size_t bytes = sizeof(Byte);
@@ -109,7 +120,10 @@ namespace IO {
 
 	}
 	size_t MemoryStream::Read(void* buffer, size_t offset, size_t length) {
-		assert(CanRead());
+		
+		// Throw an exception of the stream is not readable.
+		if (!CanRead())
+			throw NotSupportedException();
 
 		// Calculate new length if necessary (if length is greater than buffer size).
 		size_t len = length;
@@ -131,7 +145,10 @@ namespace IO {
 
 	}
 	void MemoryStream::Write(const void* buffer, size_t offset, size_t length) {
-		assert(CanWrite());
+		
+		// Throw an exception of the stream is not writeable.
+		if (!CanWrite())
+			throw NotSupportedException();
 
 		// Make enough room in the buffer for new data.
 		Allocate(length);
@@ -155,21 +172,30 @@ namespace IO {
 
 	}
 	void MemoryStream::CopyTo(Stream& stream) {
-		assert(CanRead());
+		
+		// Throw an exception of the stream is not readable.
+		if (!CanRead())
+			throw NotSupportedException();
 
 		stream.Write(__buffer, Position(), Length() - Position());
 		__position = __length;
 
 	}
 	void MemoryStream::CopyTo(Stream& stream, size_t size) {
-		assert(CanRead());
+
+		// Throw an exception of the stream is not readable.
+		if (!CanRead())
+			throw NotSupportedException();
 
 		stream.Write(__buffer, Position(), size);
 		__position += size;
 
 	}
 	void MemoryStream::Seek(long offset, SeekOrigin origin) {
-		assert(CanSeek());
+	
+		// Throw an exception of the stream is not seekable.
+		if (!CanSeek())
+			throw NotSupportedException();
 
 		switch (origin) {
 		case SeekOrigin::Begin:
