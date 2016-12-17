@@ -5,6 +5,7 @@
 
 namespace IO {
 
+	// Specifies how the operating system should open a file.
 	enum class FileMode {
 		// Opens the file if it exists and seeks to the end of the file, or creates a new file.
 		Append,
@@ -20,12 +21,17 @@ namespace IO {
 		Truncate
 	};
 
+	// Defines constants for read, write, or read/write access to a file.
 	enum class FileAccess {
+		// Read access to the file. Data can be read from the file.
 		Read,
+		// Read and write access to the file. Data can be written to and read from the file.
 		ReadWrite,
+		// Write access to the file. Data can be written to the file. 
 		Write
 	};
 
+	// Provides a Stream for a file.
 	class FileStream : public Stream {
 
 	public:
@@ -60,7 +66,5 @@ namespace IO {
 		void InitFlags(FileMode mode, FileAccess access);
 
 	};
-
-
 
 }

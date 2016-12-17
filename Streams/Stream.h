@@ -6,9 +6,13 @@ namespace IO {
 
 	typedef uint8_t Byte;
 
+	// Specifies the position in a stream to use for seeking.
 	enum class SeekOrigin {
+		// Specifies the beginning of a stream.
 		Begin,
+		// Specifies the current position within a stream.
 		Current,
+		// Specifies the end of a stream.
 		End
 	};
 
