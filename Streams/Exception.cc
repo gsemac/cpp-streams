@@ -15,6 +15,7 @@ std::string Exception::Message() const {
 
 }
 
+InvalidOperationException::InvalidOperationException() : Exception("") {}
 NotSupportedException::NotSupportedException() : Exception("Specified method is not supported.") {}
 
 IO::IOException::IOException() : Exception("I/O error occurred.") {}

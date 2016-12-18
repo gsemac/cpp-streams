@@ -14,6 +14,12 @@ public:
 
 };
 
+class InvalidOperationException : public Exception {
+public:
+	using Exception::Exception;
+	InvalidOperationException();
+};
+
 class NotSupportedException : public Exception {
 public:
 	using Exception::Exception;

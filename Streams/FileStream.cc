@@ -246,17 +246,17 @@ namespace IO {
 	}
 	bool FileStream::CanRead() const {
 
-		return (__access_flags & std::fstream::in) && !(__flags & std::fstream::app);
+		return (__access_flags & std::fstream::in) && !(__flags & std::fstream::app) && __stream.is_open();
 
 	}
 	bool FileStream::CanSeek() const {
 
-		return !(__flags & std::fstream::app);
+		return !(__flags & std::fstream::app) && __stream.is_open();
 
 	}
 	bool FileStream::CanWrite() const {
 
-		return __access_flags & std::fstream::out;
+		return (__access_flags & std::fstream::out) && __stream.is_open();
 
 	}
 

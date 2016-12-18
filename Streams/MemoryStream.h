@@ -46,11 +46,11 @@ namespace IO {
 		// Sets the position within the current stream to the specified value.
 		virtual size_t Seek(long long position) override;
 		// Gets a value indicating whether the current stream supports reading.
-		virtual bool CanRead() const;
+		virtual bool CanRead() const override;
 		// Gets a value indicating whether the current stream supports seeking.
-		virtual bool CanSeek() const;
+		virtual bool CanSeek() const override;
 		// Gets a value indicating whether the current stream supports writing.
-		virtual bool CanWrite() const;
+		virtual bool CanWrite() const override;
 
 	protected:
 		Byte* __buffer;

@@ -49,12 +49,7 @@ namespace IO {
 		return (__length == 0);
 
 	}
-	void MemoryStream::Flush() {
-
-		__length = 0;
-		__position = 0;
-
-	}
+	void MemoryStream::Flush() {}
 	void MemoryStream::SetLength(size_t length) {
 
 		// Throw error if the stream does not support writing or seeking.
@@ -223,17 +218,17 @@ namespace IO {
 	}
 	bool MemoryStream::CanRead() const {
 
-		return true;
+		return __buffer;
 
 	}
 	bool MemoryStream::CanSeek() const {
 
-		return true;
+		return __buffer;
 
 	}
 	bool MemoryStream::CanWrite() const {
 
-		return true;
+		return __buffer;
 
 	}
 
