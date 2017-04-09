@@ -18,7 +18,7 @@ namespace IO {
 	}
 	MemoryStream::MemoryStream(const char* buffer, size_t size) : MemoryStream(size) {
 
-		memcpy(__buffer, buffer, size);
+		__buffer = (Byte*)memcpy(__buffer, buffer, size);
 		__length = size;
 		__capacity = size;
 

@@ -36,6 +36,15 @@
     <ClInclude Include="BufferedStream.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="StreamWriter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BinaryWriter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BinaryReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cc">
@@ -54,6 +63,12 @@
       <Filter>Resource Files\Exceptions</Filter>
     </ClCompile>
     <ClCompile Include="BufferedStream.cc">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BinaryWriter.cc">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BinaryReader.cc">
       <Filter>Resource Files</Filter>
     </ClCompile>
   </ItemGroup>
