@@ -5,11 +5,11 @@
 
 namespace IO {
 
-	class BinaryWriter {
+	class BitWriter {
 
 	public:
-		BinaryWriter(Stream& stream);
-		~BinaryWriter();
+		BitWriter(Stream& stream);
+		~BitWriter();
 
 		// Gets the underlying stream of the BinaryWriter.
 		Stream& BaseStream();
@@ -32,7 +32,6 @@ namespace IO {
 		void WriteString(const char* value, size_t length);
 		void WriteString(const char* value, size_t offset, size_t length);
 		void WriteFloat(float value);
-		//void WriteDouble(double value);
 		void WriteInteger(unsigned int value, unsigned int min = 0, unsigned int max = UINT_MAX);
 		void WriteInteger(signed int value, signed int min = INT_MIN, signed int max = INT_MAX);
 		void WriteShort(unsigned short value, unsigned short min = 0, unsigned short max = USHRT_MAX);
@@ -46,23 +45,16 @@ namespace IO {
 		size_t __byte_offset;
 		Byte __bit_offset;
 
-		BinaryWriter();
+		BitWriter();
 
 		void FlushWrite();
 		
 		void AllocateBuffer(size_t bytes);
 		void ClearBuffer();
 		
-		Byte BitsRemaining();
+		Byte BitsRemaining() const;
 		void IncrementBitOffset();
 		
-		int BytesToBits(size_t bytes);
-		int BitsToBytes(size_t bits);
-		int BitsRequired(uint32_t min, uint32_t max);
-		int BitsRequired(uint32_t distinct_values);
-
-		//void WriteBits(void* value, size_t bytes);
-		//void WriteBits(void* value, size_t bytes, int bits);
 		void WriteBits(uint32_t value, int bits);
 
 	};

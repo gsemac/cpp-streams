@@ -173,6 +173,8 @@ ClientBin/
 *.publishsettings
 node_modules/
 orleans.codegen.cs
+*.opendb
+*.vc.db
 
 # RIA/Silverlight projects
 Generated_Code/

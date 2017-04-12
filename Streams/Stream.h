@@ -1,10 +1,9 @@
 #pragma once
+#include "IO.h"
 #include <stddef.h>
 #include <cstdint>
 
 namespace IO {
-
-	typedef uint8_t Byte;
 
 	// Specifies the position in a stream to use for seeking.
 	enum class SeekOrigin {

@@ -118,21 +118,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="BinaryReader.h" />
-    <ClInclude Include="BinaryWriter.h" />
+    <ClInclude Include="BitReader.h" />
+    <ClInclude Include="BitWriter.h" />
+    <ClInclude Include="Buffer.h" />
     <ClInclude Include="BufferedStream.h" />
     <ClInclude Include="Exception.h" />
     <ClInclude Include="FileStream.h" />
+    <ClInclude Include="IO.h" />
     <ClInclude Include="MemoryStream.h" />
     <ClInclude Include="Stream.h" />
     <ClInclude Include="StreamWriter.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BinaryReader.cc" />
-    <ClCompile Include="BinaryWriter.cc" />
+    <ClCompile Include="BitReader.cc" />
+    <ClCompile Include="BitWriter.cc" />
+    <ClCompile Include="Buffer.cc" />
     <ClCompile Include="BufferedStream.cc" />
     <ClCompile Include="Exception.cc" />
     <ClCompile Include="FileStream.cc" />
+    <ClCompile Include="IO.cc" />
     <ClCompile Include="main.cc" />
     <ClCompile Include="MemoryStream.cc" />
     <ClCompile Include="Stream.cc" />

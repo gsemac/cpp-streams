@@ -39,10 +39,16 @@
     <ClInclude Include="StreamWriter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BinaryWriter.h">
+    <ClInclude Include="IO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BinaryReader.h">
+    <ClInclude Include="Buffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BitReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BitWriter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -65,10 +71,16 @@
     <ClCompile Include="BufferedStream.cc">
       <Filter>Resource Files</Filter>
     </ClCompile>
-    <ClCompile Include="BinaryWriter.cc">
+    <ClCompile Include="IO.cc">
       <Filter>Resource Files</Filter>
     </ClCompile>
-    <ClCompile Include="BinaryReader.cc">
+    <ClCompile Include="Buffer.cc">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BitWriter.cc">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BitReader.cc">
       <Filter>Resource Files</Filter>
     </ClCompile>
   </ItemGroup>

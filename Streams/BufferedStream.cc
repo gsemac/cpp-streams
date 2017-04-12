@@ -207,7 +207,7 @@ namespace IO {
 
 		}
 
-		// Copy the number of bytes read or the requested lengtht, whichever is smaller.
+		// Copy the number of bytes read or the requested length, whichever is smaller.
 		if (bytes_read > length)
 			bytes_read = length;
 

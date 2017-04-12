@@ -40,4 +40,10 @@ namespace IO {
 		FileNotFoundException();
 	};
 
+	class EndOfStreamException : public IOException {
+	public:
+		using IOException::IOException;
+		EndOfStreamException();
+	};
+
 }
