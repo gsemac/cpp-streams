@@ -14,8 +14,8 @@ namespace IO {
 
 		bool ReadBool(bool& value);
 		bool ReadByte(Byte& value, Byte min = 0, Byte max = UCHAR_MAX);
-		bool ReadBytes(Byte* value, size_t length);
-		bool ReadBytes(Byte* value, size_t offset, size_t length);
+		size_t ReadBytes(Byte* value, size_t length);
+		size_t ReadBytes(Byte* value, size_t offset, size_t length);
 		bool ReadChar(signed char& value, signed char min = CHAR_MIN, signed char max = CHAR_MAX);
 		bool ReadString(const char* value);
 		bool ReadString(const char* value, size_t length);

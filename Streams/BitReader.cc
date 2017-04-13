@@ -46,6 +46,45 @@ namespace IO {
 		return true;
 
 	}
+	size_t BitReader::ReadBytes(Byte* value, size_t length) {
+
+		return ReadBytes(value, 0, length);
+
+	}
+	size_t BitReader::ReadBytes(Byte* value, size_t offset, size_t length) {
+
+		Byte currentByte;
+		size_t bytesRead = 0;
+
+		while (bytesRead++ < length && ReadByte(currentByte))
+			*(value + offset + bytesRead) = currentByte;
+
+		return bytesRead;
+
+	}
+	bool BitReader::ReadChar(signed char& value, signed char min = CHAR_MIN, signed char max = CHAR_MAX) {
+
+
+	}
+	bool BitReader::ReadString(const char* value) {
+
+
+
+	}
+	bool BitReader::ReadString(const char* value, size_t length) {
+
+
+	}
+	bool BitReader::ReadString(const char* value, size_t offset, size_t length) {
+
+
+
+	}
+	bool BitReader::ReadFloat(float& value) {
+
+
+
+	}
 	bool BitReader::ReadInteger(unsigned int& value, unsigned int min, unsigned int max) {
 
 		unsigned int result = value - min;
