@@ -62,27 +62,29 @@ namespace IO {
 		return bytesRead;
 
 	}
-	bool BitReader::ReadChar(signed char& value, signed char min = CHAR_MIN, signed char max = CHAR_MAX) {
+	bool BitReader::ReadChar(signed char& value, signed char min, signed char max) {
 
+		return false;
 
 	}
 	bool BitReader::ReadString(const char* value) {
 
-
+		return false;
 
 	}
 	bool BitReader::ReadString(const char* value, size_t length) {
 
+		return false;
 
 	}
 	bool BitReader::ReadString(const char* value, size_t offset, size_t length) {
 
-
+		return false;
 
 	}
 	bool BitReader::ReadFloat(float& value) {
 
-
+		return false;
 
 	}
 	bool BitReader::ReadInteger(unsigned int& value, unsigned int min, unsigned int max) {
