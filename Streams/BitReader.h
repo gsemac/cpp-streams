@@ -12,6 +12,18 @@ namespace IO {
 		BitReader(Stream& stream);
 		~BitReader();
 
+		// Sets the position within the current stream.
+		void Seek(long long position, SeekOrigin offset);
+		// Sets the position within the current stream.
+		void Seek(long long position);
+		// Sets the bit position within the current stream.
+		void BitSeek(long long position, SeekOrigin offset);
+		// Sets the bit position within the current stream.
+		void BitSeek(long long position);
+
+		// Returns the next available byte, or -1 if no more bytes are available, and does not advance the read position.
+		int Peek();
+		
 		bool ReadBool(bool& value);
 		bool ReadByte(Byte& value, Byte min = 0, Byte max = UCHAR_MAX);
 		size_t ReadBytes(Byte* value, size_t length);

@@ -18,10 +18,15 @@ namespace IO {
 		void Close();
 		// Clears all buffers for the current writer and causes any buffered data to be written to the underlying device.
 		void Flush();
+
 		// Sets the position within the current stream.
 		void Seek(long long position, SeekOrigin offset);
 		// Sets the position within the current stream.
 		void Seek(long long position);
+		// Sets the bit position within the current stream.
+		void BitSeek(long long bits, SeekOrigin offset);
+		// Sets the bit position within the current stream.
+		void BitSeek(long long bits);
 
 		void WriteBool(bool value);
 		void WriteByte(Byte value, Byte min = 0, Byte max = UCHAR_MAX);
@@ -41,7 +46,7 @@ namespace IO {
 		Stream* __stream;
 		bool __owns_stream;
 		Byte* __buffer;
-		size_t __buffer_size;
+		size_t _buffer_size;
 		size_t __byte_offset;
 		Byte __bit_offset;
 

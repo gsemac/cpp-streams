@@ -13,11 +13,35 @@
 
 int main(int argv, char* argc[]) {
 
+	try {
+
 	IO::MemoryStream ms;
 	IO::BitWriter bw(ms);
 	IO::BitReader br(ms);
 	IO::Byte byte = 0;
 	
+	ms.WriteByte(0);
+	ms.WriteByte(0);
+	ms.Seek(0);
+
+	bw.BitSeek(2);
+	bw.WriteBool(1);
+	bw.BitSeek(12, IO::SeekOrigin::Current);
+	std::cout << "Stream Position: " << ms.Position() << std::endl;
+	bw.WriteBool(1);
+	bw.WriteBool(1);
+	bw.BitSeek(32);
+	bw.WriteByte(255);
+	bw.Flush();
+
+	ms.Seek(0);
+	while(ms.ReadByte(byte))
+		std::cout << std::bitset<8>(byte) << ' ';
+	std::cout << "\n";
+
+	getchar();
+
+
 	// Write some data to the memory stream.
 	for (int i = 1; i <= 7; ++i)
 		bw.WriteInteger(i, 0, 7);
@@ -51,5 +75,11 @@ int main(int argv, char* argc[]) {
 	std::cout << "\nRead Bytes: " << br._bytes_read;
 
 	getchar();
+
+	}
+	catch (Exception ex) {
+		std::cout << ex.Message();
+		getchar();
+	}
 
 }

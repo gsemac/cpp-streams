@@ -22,6 +22,37 @@ namespace IO {
 
 	}
 
+	void BitReader::Seek(long long position, SeekOrigin offset) {
+
+		// Flush reads performed on the buffer.
+		FlushRead();
+
+		// Seek the underlying stream.
+
+
+	}
+	void BitReader::Seek(long long position) {
+
+		Seek(position, IO::SeekOrigin::Begin);
+
+	}
+	void BitReader::BitSeek(long long position, SeekOrigin offset) {
+
+		
+
+	}
+	void BitReader::BitSeek(long long position) {
+
+		BitSeek(position, IO::SeekOrigin::Begin);
+
+	}
+
+	int BitReader::Peek() {
+
+		return -1;
+
+	}
+
 	bool BitReader::ReadBool(bool& value) {
 
 		uint32_t valueRead;

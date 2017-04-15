@@ -4,6 +4,7 @@
 #include <cstring>
 #include <algorithm>
 #include <cassert>
+#include <iostream>
 
 namespace IO {
 
@@ -116,9 +117,13 @@ namespace IO {
 
 		// Calculate new length if necessary (if length is greater than buffer size).
 		size_t len = length;
-		if (__position + len > __length)
-			len = __length - __position;
-
+		if (__position + length > __length)
+			if (__position > __length)
+				// The stream has been seeked beyond the end of the stream. Nothing to read.
+				return 0;
+			else
+				len = __length - __position;
+	
 		// If length is 0, return.
 		if (len == 0)
 			return 0;
@@ -176,7 +181,7 @@ namespace IO {
 
 	}
 	void MemoryStream::CopyTo(Stream& stream, size_t buffer_size) {
-	
+
 		Stream::CopyTo(stream, buffer_size);
 
 	}
@@ -243,8 +248,10 @@ namespace IO {
 		if (__capacity >= capacity)
 			return;
 
-		// Increase the capacity of the buffer.
+		// Increase the capacity of the buffer and clear the new memory.
 		__buffer = (Byte*)realloc(__buffer, capacity);
+		memset(__buffer + __capacity, 0, capacity - __capacity);
+
 		__capacity = capacity;
 
 	}

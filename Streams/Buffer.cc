@@ -108,22 +108,45 @@ namespace IO {
 		if (!_buffer || length <= 0)
 			return;
 
-		for (size_t i = index, j = index + length - 1; i < j; ++i, --j) 
+		for (size_t i = index, j = index + length - 1; i < j; ++i, --j)
 			std::swap(*(_buffer + i), *(_buffer + j));
 
 	}
 	void Buffer::Resize(size_t bytes, bool zero) {
 
-		// Create a new buffer, and zero-out the memory if it's larger than the current buffer.
-		Buffer newBuffer(bytes, zero);
+		// If the size is zero, simply free the current buffer.
+		if (bytes == 0) {
 
-		// Copy the contents of this buffer to the new one.
-		Copy(newBuffer, 0, 0, (std::min)(_size, bytes));
+			// Free the current buffer.
+			if (_buffer)
+				free(_buffer);
 
-		// Swap our old memory address with that of the old buffer so it frees the old memory.
-		std::swap(_buffer, newBuffer._buffer);
+			// Set members to null.
+			_buffer = nullptr;
+			_size = 0;
+
+			return;
+
+		}
+
+		if (_buffer) {
+
+			// Reallocate the buffer's memory.
+			_buffer = (Byte*)realloc(_buffer, bytes);
+
+			// Zero-out the new memory (if there is new memory).
+			if (zero && bytes > _size)
+				memset(_buffer + _size, 0, bytes - _size);
+
+		}
+		else if (zero)
+			// If the buffer has yet to be created, create a new zeroed buffer.
+			_buffer = (Byte*)calloc(bytes, sizeof(Byte));
+		else
+			// If the buffer has yet to be created, create a new unitialized buffer.
+			_buffer = (Byte*)malloc(bytes);
 		
-		// Update this buffer's size.
+		// Update the size.
 		_size = bytes;
 
 	}

@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <algorithm>
 #include <cassert>
+#include <iostream>
 
 namespace IO {
 
@@ -15,8 +16,8 @@ namespace IO {
 		__bit_offset = 0;
 
 		// Set buffer to 64-bits initially, which should be enough to contain most primitive types.
-		__buffer_size = 8;
-		AllocateBuffer(__buffer_size);
+		_buffer_size = 8;
+		AllocateBuffer(_buffer_size);
 
 	}
 	BitWriter::BitWriter(Stream& stream) : BitWriter() {
@@ -75,6 +76,50 @@ namespace IO {
 	void BitWriter::Seek(long long position) {
 
 		Seek(position, SeekOrigin::Begin);
+
+	}
+	void BitWriter::BitSeek(long long bits, SeekOrigin offset) {
+
+		// Throw an exception of the underlying stream does not support reading.
+		// We will need to read from the stream into the write buffer in order to modify individual bits.
+		if (!__stream || !__stream->CanRead())
+			throw NotSupportedException();
+
+		// Convert the offset into one relative to the start of the stream.
+		switch (offset) {
+		case SeekOrigin::Current:
+			bits += __stream->Position() * 8;
+			bits += __bit_offset;
+			break;
+		case SeekOrigin::End:
+			bits += __stream->Length() * 8;
+			bits += __bit_offset;
+			break;
+		}
+
+		// Get the number of bytes that we'll need to advance into the stream.
+		long long bytes = bits / 8;
+
+		// Calculate the remaining bit offset.
+		bits -= bytes * 8;
+
+		// Seek by the number of bytes.
+		Seek(bytes);
+
+		// Fill the write buffer with data from the stream.
+		long long bytes_read = __stream->Read(__buffer, 0, _buffer_size);
+	
+		// Seek back to the original position.
+		Seek(-bytes_read, SeekOrigin::Current);
+
+		// Set the bit and byte offsets.
+		__bit_offset = bits;
+		__byte_offset = 0;
+
+	}
+	void BitWriter::BitSeek(long long bits) {
+
+		BitSeek(bits, SeekOrigin::Begin);
 
 	}
 
@@ -204,7 +249,7 @@ namespace IO {
 
 	Byte BitWriter::BitsRemaining() const {
 
-		return (__buffer_size * 8) - (__byte_offset * 8 + __bit_offset);
+		return (_buffer_size * 8) - (__byte_offset * 8 + __bit_offset);
 
 	}
 	void BitWriter::IncrementBitOffset() {
@@ -216,7 +261,7 @@ namespace IO {
 			++__byte_offset;
 
 			// If we've reached the end of the buffer, flush write.
-			if (__byte_offset == __buffer_size)
+			if (__byte_offset == _buffer_size)
 				FlushWrite();
 
 		}
@@ -230,7 +275,7 @@ namespace IO {
 		// If we're writing a single byte and the bit offset is 0, write it directly.
 		if (bits == 8 && !__bit_offset) {
 			__buffer[__byte_offset++] = value;
-			if (__byte_offset == __buffer_size)
+			if (__byte_offset == _buffer_size)
 				FlushWrite();
 			return;
 		}

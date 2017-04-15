@@ -20,7 +20,7 @@ namespace IO {
 			*addr = byte;
 			addr += sizeof(Byte);
 		}
-
+	
 		return bytes_read;
 
 	}
