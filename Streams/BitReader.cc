@@ -49,6 +49,10 @@ namespace IO {
 
 	int BitReader::Peek() {
 
+		Byte value;
+		if (ReadByte(value))
+			return value;
+		
 		return -1;
 
 	}
