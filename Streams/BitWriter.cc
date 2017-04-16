@@ -35,6 +35,10 @@ namespace IO {
 
 	Stream& BitWriter::BaseStream() {
 
+		// If there is no stream, throw error.
+		if (!__stream)
+			throw IO::IOException();
+
 		return *__stream;
 
 	}
@@ -93,7 +97,6 @@ namespace IO {
 			break;
 		case SeekOrigin::End:
 			bits += __stream->Length() * 8;
-			bits += __bit_offset;
 			break;
 		}
 

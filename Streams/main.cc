@@ -12,13 +12,65 @@
 #include <bitset>
 
 int main(int argv, char* argc[]) {
+	IO::Byte byte = 0;
+
+	IO::MemoryStream ms;
+	IO::BitWriter bw(ms);
+	IO::BitReader br(ms);
+	IO::Byte input[] = { 0b11111111, 0b00000000, 0b00001010 };
+
+	//bw.WriteBool(true);
+	bw.WriteBytes(input, sizeof(input));
+	bw.Flush();
+
+	ms.Seek(0);
+
+	//br.BitSeek(1);
+
+	IO::Byte output[sizeof(input)];
+	br.ReadBytes(output, sizeof(output));
+
+	for (size_t i = 0; i < sizeof(output); ++i)
+		std::cout << std::bitset<8>(output[i]) << ' ';
+
+	//IO::MemoryStream ms;
+	//IO::BitWriter bw(ms);
+	//IO::BitReader br(ms);
+	//IO::Byte input[] = { 0b11111111, 0b00000000, 0b00001010 };
+
+	////bw.WriteBool(true);
+	//bw.WriteBytes(input, sizeof(input));
+	//bw.Flush();
+
+	//ms.Seek(0);
+
+	//while (ms.ReadByte(byte))
+	//	std::cout << std::bitset<8>(byte) << ' ';
+
+	//ms.Seek(0);
+
+	////br.BitSeek(1);
+
+	////IO::Byte output[sizeof(input)];
+	////br.ReadBytes(output, sizeof(output));
+
+	//std::cout << '\n';
+	//while (br.ReadByte(byte)) 
+	//	std::cout << std::bitset<8>(byte) << ' ';
+	//
+	//	
+
+	////for (size_t i = 0; i < sizeof(output); ++i)
+	////	Assert::AreEqual(input[i], output[i]);
+
+	getchar();
 
 	try {
 
 	IO::MemoryStream ms;
 	IO::BitWriter bw(ms);
 	IO::BitReader br(ms);
-	IO::Byte byte = 0;
+
 	
 	ms.WriteByte(0);
 	ms.WriteByte(0);

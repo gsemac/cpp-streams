@@ -12,14 +12,22 @@ namespace IO {
 		BitReader(Stream& stream);
 		~BitReader();
 
+		// Gets the underlying stream of the BinaryWriter.
+		Stream& BaseStream();
+
+		// Closes the current BinaryWriter and the underlying stream.
+		void Close();
+		// Clears all buffers for the current writer and causes any buffered data to be written to the underlying device.
+		void Flush();
+
 		// Sets the position within the current stream.
 		void Seek(long long position, SeekOrigin offset);
 		// Sets the position within the current stream.
 		void Seek(long long position);
 		// Sets the bit position within the current stream.
-		void BitSeek(long long position, SeekOrigin offset);
+		void BitSeek(long long bits, SeekOrigin offset);
 		// Sets the bit position within the current stream.
-		void BitSeek(long long position);
+		void BitSeek(long long bits);
 
 		// Returns the next available byte, or -1 if no more bytes are available, and does not advance the read position.
 		int Peek();
@@ -47,8 +55,8 @@ namespace IO {
 
 		void FlushRead();
 
-		void FillReadBuffer();
-		void ClearReadBuffer();
+		void FillBuffer();
+		void ClearBuffer();
 
 		// Returns the number of free bits left in the read buffer.
 		size_t UnreadBitsLeft() const;
