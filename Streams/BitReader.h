@@ -36,7 +36,7 @@ namespace IO {
 		bool ReadByte(Byte& value, Byte min = 0, Byte max = UCHAR_MAX);
 		size_t ReadBytes(Byte* value, size_t length);
 		size_t ReadBytes(Byte* value, size_t offset, size_t length);
-		bool ReadChar(signed char& value, signed char min = CHAR_MIN, signed char max = CHAR_MAX);
+		bool ReadChar(signed char& value, signed char min = SCHAR_MIN, signed char max = SCHAR_MAX);
 		bool ReadString(const char* value);
 		bool ReadString(const char* value, size_t length);
 		bool ReadString(const char* value, size_t offset, size_t length);
@@ -50,8 +50,8 @@ namespace IO {
 		Stream* _stream;
 		Buffer _buffer;
 		size_t _byte_offset;
-		Byte _bit_offset;
 		size_t _bytes_read; // the number of bytes read into the buffer
+		Byte _bit_offset;
 
 		void FlushRead();
 

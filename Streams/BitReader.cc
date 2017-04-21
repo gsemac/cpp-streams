@@ -60,7 +60,7 @@ namespace IO {
 		FlushRead();
 
 		// Seek the underlying stream.
-		Seek(position, offset);
+		_stream->Seek(position, offset);
 
 	}
 	void BitReader::Seek(long long position) {
@@ -128,7 +128,7 @@ namespace IO {
 	}
 	bool BitReader::ReadByte(Byte& value, Byte min, Byte max) {
 
-		uint32_t result = value - min;
+		uint32_t result = 0;
 
 		if (!ReadBits(result, BitsRequired(min, max)))
 			return false;
@@ -156,7 +156,14 @@ namespace IO {
 	}
 	bool BitReader::ReadChar(signed char& value, signed char min, signed char max) {
 
-		return false;
+		signed int result = 0;
+
+		if (!ReadInteger(result, min, max))
+			return false;
+
+		value = (signed char)result;
+		
+		return true;
 
 	}
 	bool BitReader::ReadString(const char* value) {
@@ -181,7 +188,7 @@ namespace IO {
 	}
 	bool BitReader::ReadInteger(unsigned int& value, unsigned int min, unsigned int max) {
 
-		unsigned int result = value - min;
+		uint32_t result = 0;
 
 		if (!ReadBits(result, BitsRequired(min, max)))
 			return false;
@@ -193,12 +200,38 @@ namespace IO {
 	}
 	bool BitReader::ReadInteger(signed int& value, signed int min, signed int max) {
 
-		unsigned int temp = (unsigned int)(value + (INT_MAX - 1));
+		unsigned int uresult = 0;
+		unsigned int umin = min + INT_MAX + 1;
+		unsigned int umax = max + INT_MAX + 1;
 
-		if (!ReadInteger(temp, (unsigned int)(min + (INT_MAX - 1)), max + (INT_MAX - 1)))
+		if (!ReadInteger(uresult, umin, umax))
 			return false;
 
-		value = (signed int)temp - (INT_MAX - 1);
+		value = (signed int)uresult - INT_MAX;
+
+		return true;
+
+	}
+	bool BitReader::ReadShort(unsigned short& value, unsigned short min, unsigned short max) {
+
+		unsigned int result = 0;
+
+		if (!ReadInteger(result, min, max))
+			return false;
+
+		value = (unsigned short)result;
+
+		return true;
+
+	}
+	bool BitReader::ReadShort(signed short& value, signed short min, signed short max) {
+
+		signed int result = 0;
+
+		if (!ReadInteger(result, min, max))
+			return false;
+
+		value = (signed short)result;
 
 		return true;
 

@@ -40,7 +40,7 @@ namespace IO {
 		// Initializes a new instance of the FileStream class with the specified path, creation mode, and read/write permission.
 		FileStream(const char* path, FileMode mode, FileAccess access);
 		// Releases all resources used by the Stream.
-		~FileStream();
+		virtual ~FileStream();
 
 		// Gets the length in bytes of the stream.
 		size_t Length() override;

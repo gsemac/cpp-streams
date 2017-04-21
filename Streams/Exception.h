@@ -14,6 +14,12 @@ public:
 
 };
 
+class ArgumentException : public Exception {
+public:
+	using Exception::Exception;
+	ArgumentException();
+};
+
 class InvalidOperationException : public Exception {
 public:
 	using Exception::Exception;
@@ -34,16 +40,16 @@ namespace IO {
 		IOException();
 	};
 
-	class FileNotFoundException : public IOException {
-	public:
-		using IOException::IOException;
-		FileNotFoundException();
-	};
-
 	class EndOfStreamException : public IOException {
 	public:
 		using IOException::IOException;
 		EndOfStreamException();
+	};
+
+	class FileNotFoundException : public IOException {
+	public:
+		using IOException::IOException;
+		FileNotFoundException();
 	};
 
 }

@@ -116,7 +116,7 @@ namespace IO {
 		Seek(-bytes_read, SeekOrigin::Current);
 
 		// Set the bit and byte offsets.
-		__bit_offset = bits;
+		__bit_offset = (IO::Byte)bits;
 		__byte_offset = 0;
 
 	}
@@ -153,8 +153,7 @@ namespace IO {
 	}
 	void BitWriter::WriteChar(signed char value, signed char min, signed char max) {
 
-		unsigned char shift = (min < 0) ? -min : 0;
-		WriteBits(value + shift, BitsRequired(min + shift, max + shift));
+		WriteInteger(value, min, max);
 
 	}
 	void BitWriter::WriteString(const char* value) {
@@ -193,19 +192,29 @@ namespace IO {
 	}
 	void BitWriter::WriteInteger(signed int value, signed int min, signed int max) {
 
-		unsigned int shift = (min < 0) ? -min : 0;
-		WriteBits(value + shift, BitsRequired(min + shift, max + shift));
+		unsigned int uvalue = value + INT_MAX;
+		unsigned int umin = min + INT_MAX + 1;
+		unsigned int umax = max + INT_MAX + 1;
+
+		std::cout << "INT_MIN: " << INT_MIN << std::endl;
+		std::cout << "INT_MAX: " << INT_MAX << std::endl;
+		std::cout << "UINT_MAX: " << UINT_MAX << std::endl;
+		std::cout << "min    : " << min << std::endl;
+		std::cout << "max    : " << max << std::endl;
+		std::cout << "umin   : " << umin << std::endl;
+		std::cout << "umax   : " << umax << std::endl;
+
+		WriteInteger(uvalue, umin, umax);
 
 	}
 	void BitWriter::WriteShort(unsigned short value, unsigned short min, unsigned short max) {
 
-		WriteBits(value, BitsRequired(min, max));
+		WriteInteger(value, min, max);
 
 	}
 	void BitWriter::WriteShort(signed short value, signed short min, signed short max) {
 
-		unsigned short shift = (min < 0) ? -min : 0;
-		WriteBits(value + shift, BitsRequired(min + shift, max + shift));
+		WriteInteger(value, min, max);
 
 	}
 
@@ -250,7 +259,7 @@ namespace IO {
 
 	}
 
-	Byte BitWriter::BitsRemaining() const {
+	size_t BitWriter::BitsRemaining() const {
 
 		return (_buffer_size * 8) - (__byte_offset * 8 + __bit_offset);
 

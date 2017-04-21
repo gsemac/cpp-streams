@@ -257,7 +257,7 @@ namespace IO {
 					bytes_left = length;
 
 				// Write directly into the buffer (as much as we can).
-				memcpy((Byte*)buffer + offset * sizeof(Byte), __buffer + __wpos*sizeof(Byte), bytes_left);
+				memcpy((Byte*)buffer + offset * sizeof(Byte), __buffer + __wpos * sizeof(Byte), bytes_left);
 				__wpos += bytes_left;
 
 				// If we could fit all of the bytes into the buffer, return here.

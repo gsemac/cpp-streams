@@ -192,7 +192,7 @@ namespace IO {
 			throw NotSupportedException();
 
 		// Get the origin position from the seek origin.
-		size_t origin_position;
+		size_t origin_position = 0;
 		switch (origin) {
 		case SeekOrigin::Begin:
 			origin_position = 0;
@@ -223,17 +223,17 @@ namespace IO {
 	}
 	bool MemoryStream::CanRead() const {
 
-		return __buffer;
+		return __buffer != nullptr;
 
 	}
 	bool MemoryStream::CanSeek() const {
 
-		return __buffer;
+		return __buffer != nullptr;
 
 	}
 	bool MemoryStream::CanWrite() const {
 
-		return __buffer;
+		return __buffer != nullptr;
 
 	}
 

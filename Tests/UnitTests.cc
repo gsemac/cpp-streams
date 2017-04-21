@@ -70,22 +70,132 @@ public:
 
 	TEST_CLASS(BitReaderTests) {
 public:
-	// Tests that a BitReader can accurately read a 3-bit unsigned integer written by a BitWriter.
-	TEST_METHOD(ReadMultiple3BitUIntegers) {
+	// Tests that a BitReader can accurately read multiple bounded unsigned integers written by a BitWriter.
+	TEST_METHOD(ReadMultipleBoundedUnsignedIntegers) {
 
 		IO::MemoryStream ms;
 		IO::BitWriter bw(ms);
 		IO::BitReader br(ms);
 
-		bw.WriteInteger(5U, 2U, 7U);
+		for (unsigned int i = 0; i <= 5; ++i)
+			bw.WriteInteger(6U, i, 7U);
 		bw.Flush();
 
 		ms.Seek(0);
 
 		unsigned int value;
-		br.ReadInteger(value, 2U, 7U);
+		for (unsigned int i = 0; i <= 5; ++i) {
+			br.ReadInteger(value, i, 7U);
+			Assert::AreEqual(6U, value);
+		}
 
-		Assert::AreEqual(5U, value);
+	}
+	// Tests that a BitReader can accurately read the largest possible unsigned integer written by a BitWriter.
+	TEST_METHOD(ReadMaximumUnsignedInteger) {
+
+		IO::MemoryStream ms;
+		IO::BitWriter bw(ms);
+		IO::BitReader br(ms);
+
+		bw.WriteInteger(UINT_MAX);
+		bw.Flush();
+
+		ms.Seek(0);
+
+		unsigned int value = 0;
+		br.ReadInteger(value);
+		Assert::AreEqual(UINT_MAX, value);
+
+	}
+	// Tests that a BitReader can accurately read multiple positively-bounded signed integers written by a BitWriter.
+	TEST_METHOD(ReadMultiplePositivelyBoundedSignedIntegers) {
+
+		IO::MemoryStream ms;
+		IO::BitWriter bw(ms);
+		IO::BitReader br(ms);
+
+		for (signed int i = 0; i <= 5; ++i)
+			bw.WriteInteger(6, i, 7);
+		bw.Flush();
+
+		ms.Seek(0);
+
+		signed int value;
+		for (signed int i = 0; i <= 5; ++i) {
+			br.ReadInteger(value, i, 7);
+			Assert::AreEqual(6, value);
+		}
+
+	}
+	// Tests that a BitReader can accurately read multiple negatively-bounded signed integers written by a BitWriter.
+	TEST_METHOD(ReadMultipleNegativelyBoundedSignedIntegers) {
+
+		IO::MemoryStream ms;
+		IO::BitWriter bw(ms);
+		IO::BitReader br(ms);
+
+		for (signed int i = 0; i <= 5; ++i)
+			bw.WriteInteger(-6, -7, -i);
+		bw.Flush();
+
+		ms.Seek(0);
+
+		signed int value;
+		for (signed int i = 0; i <= 5; ++i) {
+			br.ReadInteger(value, -7, -i);
+			Assert::AreEqual(-6, value);
+		}
+
+	}
+	// Tests that a BitReader can accurately read a single unbounded signed integer written by a BitWriter.
+	TEST_METHOD(ReadUnboundedSignedInteger) {
+
+		IO::MemoryStream ms;
+		IO::BitWriter bw(ms);
+		IO::BitReader br(ms);
+
+		bw.WriteInteger(65);
+		bw.Flush();
+
+		ms.Seek(0);
+
+		signed int value;
+		br.ReadInteger(value);
+		Assert::AreEqual(65, value);
+
+	}
+	// Tests that a BitReader can accurately read the largest possible signed integer written by a BitWriter.
+	TEST_METHOD(ReadMaximumSignedInteger) {
+
+		IO::MemoryStream ms;
+		IO::BitWriter bw(ms);
+		IO::BitReader br(ms);
+
+		bw.WriteInteger(INT_MAX);
+		bw.Flush();
+
+		ms.Seek(0);
+
+		signed int value = 0;
+		br.ReadInteger(value);
+		Assert::AreEqual(INT_MAX, value);
+
+	}
+	// Tests that a BitReader can accurately read the smallest possible signed integer written by a BitWriter.
+	TEST_METHOD(ReadMinimumSignedInteger) {
+
+		IO::MemoryStream ms;
+		IO::BitWriter bw(ms);
+		IO::BitReader br(ms);
+
+		bw.WriteInteger(INT_MIN);
+		bw.Flush();
+
+		ms.Seek(0);
+
+		signed int value = 0;
+		br.ReadInteger(value);
+		Assert::AreEqual(INT_MIN, value);
 
 	}
 	// Tests that bit-level seeking from the beginning of a stream with a single byte is accurate.
@@ -132,6 +242,40 @@ public:
 
 		for (size_t i = 0; i < sizeof(output); ++i)
 			Assert::AreEqual(input[i], output[i]);
+
+	}
+	TEST_METHOD(ReadUnboundedSignedChar) {
+
+		IO::MemoryStream ms;
+		IO::BitWriter bw(ms);
+		IO::BitReader br(ms);
+
+		bw.WriteChar(65);
+		bw.Flush();
+
+		ms.Seek(0);
+
+		signed char value;
+		br.ReadChar(value);
+	
+		Assert::AreEqual(0,0);
+
+	}
+	TEST_METHOD(ReadBoundedSignedChar) {
+
+		IO::MemoryStream ms;
+		IO::BitWriter bw(ms);
+		IO::BitReader br(ms);
+
+		bw.WriteChar(3, 1, 7);
+		bw.Flush();
+
+		ms.Seek(0);
+
+		signed char value;
+		br.ReadChar(value, 1, 7);
+
+		Assert::AreEqual((signed char)3, value);
 
 	}
 	};

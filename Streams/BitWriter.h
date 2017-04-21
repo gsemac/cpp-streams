@@ -32,7 +32,7 @@ namespace IO {
 		void WriteByte(Byte value, Byte min = 0, Byte max = UCHAR_MAX);
 		void WriteBytes(Byte* value, size_t length);
 		void WriteBytes(Byte* value, size_t offset, size_t length);
-		void WriteChar(signed char value, signed char min = CHAR_MIN, signed char max = CHAR_MAX);
+		void WriteChar(signed char value, signed char min = SCHAR_MIN, signed char max = SCHAR_MAX);
 		void WriteString(const char* value);
 		void WriteString(const char* value, size_t length);
 		void WriteString(const char* value, size_t offset, size_t length);
@@ -57,7 +57,7 @@ namespace IO {
 		void AllocateBuffer(size_t bytes);
 		void ClearBuffer();
 		
-		Byte BitsRemaining() const;
+		size_t BitsRemaining() const;
 		void IncrementBitOffset();
 		
 		void WriteBits(uint32_t value, int bits);

@@ -15,9 +15,10 @@ std::string Exception::Message() const {
 
 }
 
+ArgumentException::ArgumentException() : Exception("Value does not fall within the expected range.") {}
 InvalidOperationException::InvalidOperationException() : Exception("Operation is not valid due to the current state of the object.") {}
 NotSupportedException::NotSupportedException() : Exception("Specified method is not supported.") {}
 
 IO::IOException::IOException() : Exception("I/O error occurred.") {}
-IO::FileNotFoundException::FileNotFoundException() : IOException("Unable to find the specified file.") {}
 IO::EndOfStreamException::EndOfStreamException() : IOException("Unable to read beyond the end of the stream.") {}
+IO::FileNotFoundException::FileNotFoundException() : IOException("Unable to find the specified file.") {}

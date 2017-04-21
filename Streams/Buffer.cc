@@ -137,7 +137,7 @@ namespace IO {
 			// Zero-out the new memory (if there is new memory).
 			if (zero && bytes > _size)
 				memset(_buffer + _size, 0, bytes - _size);
-
+			
 		}
 		else if (zero)
 			// If the buffer has yet to be created, create a new zeroed buffer.
