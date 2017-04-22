@@ -3,6 +3,7 @@
 #include "Buffer.h"
 #include <climits>
 #include <array>
+#include <string>
 
 namespace IO {
 
@@ -37,9 +38,11 @@ namespace IO {
 		size_t ReadBytes(Byte* value, size_t length);
 		size_t ReadBytes(Byte* value, size_t offset, size_t length);
 		bool ReadChar(signed char& value, signed char min = SCHAR_MIN, signed char max = SCHAR_MAX);
-		bool ReadString(const char* value);
-		bool ReadString(const char* value, size_t length);
-		bool ReadString(const char* value, size_t offset, size_t length);
+		size_t ReadString(char* value);
+		size_t ReadString(char* value, size_t length);
+		size_t ReadString(char* value, size_t offset, size_t length);
+		size_t ReadString(std::string& value);
+		size_t ReadString(std::string& value, size_t length);
 		bool ReadFloat(float& value);
 		bool ReadInteger(unsigned int& value, unsigned int min = 0, unsigned int max = UINT_MAX);
 		bool ReadInteger(signed int& value, signed int min = INT_MIN, signed int max = INT_MAX);

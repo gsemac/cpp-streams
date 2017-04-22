@@ -2,6 +2,7 @@
 #include "Stream.h"
 #include <climits>
 #include <stdint.h>
+#include <string>
 
 namespace IO {
 
@@ -36,6 +37,7 @@ namespace IO {
 		void WriteString(const char* value);
 		void WriteString(const char* value, size_t length);
 		void WriteString(const char* value, size_t offset, size_t length);
+		void WriteString(const std::string& value);
 		void WriteFloat(float value);
 		void WriteInteger(unsigned int value, unsigned int min = 0, unsigned int max = UINT_MAX);
 		void WriteInteger(signed int value, signed int min = INT_MIN, signed int max = INT_MAX);

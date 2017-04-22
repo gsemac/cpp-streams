@@ -23,15 +23,15 @@ int main(int argv, char* argc[]) {
 	//for (signed int i = 0; i <= 5; ++i)
 	//	bw.WriteInteger(-6, -7, -i);
 	//bw.WriteInteger(INT_MAX);
-	bw.WriteInteger(5, 1, 7);
+	bw.WriteShort((short)5, 1, 7);
 	bw.Flush();
 
 	std::cout << "Write OK\n";
 
 	ms.Seek(0);
 
-	signed int value = 0;
-	br.ReadInteger(value, -7, -5);
+	short value = 0;
+	br.ReadShort(value, 1, 7);
 
 	std::cout << "Read: " << value;
 	

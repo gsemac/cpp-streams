@@ -109,7 +109,7 @@ namespace IO {
 		Byte value;
 		if (ReadByte(value))
 			return value;
-		
+
 		return -1;
 
 	}
@@ -132,7 +132,7 @@ namespace IO {
 
 		if (!ReadBits(result, BitsRequired(min, max)))
 			return false;
-		
+
 		value = (Byte)result + min;
 
 		return true;
@@ -162,28 +162,78 @@ namespace IO {
 			return false;
 
 		value = (signed char)result;
-		
+
 		return true;
 
 	}
-	bool BitReader::ReadString(const char* value) {
+	size_t BitReader::ReadString(char* value) {
 
-		return false;
+		Byte read;
+		size_t index = 0;
+
+		while (ReadByte(read)) {
+			*(value + index++) = read;
+			if (read = '\0')
+				break;
+		}
+			
+		return index;
 
 	}
-	bool BitReader::ReadString(const char* value, size_t length) {
+	size_t BitReader::ReadString(char* value, size_t length) {
 
-		return false;
+		return ReadString(value, 0, length);
 
 	}
-	bool BitReader::ReadString(const char* value, size_t offset, size_t length) {
+	size_t BitReader::ReadString(char* value, size_t offset, size_t length) {
 
-		return false;
+		Byte read;
+		size_t index = 0;
+
+		while (ReadByte(read) && index < length)
+			*(value + offset + index++) = read;
+
+		return index;
+
+	}
+	size_t BitReader::ReadString(std::string& value) {
+
+		Byte read;
+		size_t index = 0;
+
+		while (ReadByte(read)) {
+			if (read = '\0')
+				break;
+			value[index++] = read;
+		}
+
+		return index;
+
+	}
+	size_t BitReader::ReadString(std::string& value, size_t length) {
+
+		Byte read;
+		size_t index = 0;
+
+		while (ReadByte(read) && index < length)
+			value[index++] = read;
+
+		return index;
 
 	}
 	bool BitReader::ReadFloat(float& value) {
 
-		return false;
+		union FloatInt {
+			unsigned int i;
+			float f;
+		} float_int;
+
+		if (!ReadInteger(float_int.i))
+			return false;
+
+		value = float_int.f;
+
+		return true;
 
 	}
 	bool BitReader::ReadInteger(unsigned int& value, unsigned int min, unsigned int max) {

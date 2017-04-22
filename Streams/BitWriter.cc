@@ -174,6 +174,11 @@ namespace IO {
 			WriteByte(*(value++));
 
 	}
+	void BitWriter::WriteString(const std::string& value) {
+
+		WriteString(value.c_str());
+
+	}
 	void BitWriter::WriteFloat(float value) {
 
 		union FloatInt {
