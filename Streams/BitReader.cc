@@ -173,7 +173,7 @@ namespace IO {
 
 		while (ReadByte(read)) {
 			*(value + index++) = read;
-			if (read = '\0')
+			if (read == '\0')
 				break;
 		}
 			
@@ -202,9 +202,16 @@ namespace IO {
 		size_t index = 0;
 
 		while (ReadByte(read)) {
-			if (read = '\0')
+			if (read == '\0') {
+				index++;
 				break;
-			value[index++] = read;
+			}
+			if (index < value.length())
+				value[index++] = read;
+			else {
+				value.push_back(read);
+				++index;
+			}
 		}
 
 		return index;
@@ -215,8 +222,14 @@ namespace IO {
 		Byte read;
 		size_t index = 0;
 
-		while (ReadByte(read) && index < length)
-			value[index++] = read;
+		while (ReadByte(read) && index < length) {
+			if (index < value.length())
+				value[index++] = read;
+			else {
+				value.push_back(read);
+				++index;
+			}
+		}
 
 		return index;
 

@@ -13,33 +13,40 @@
 #include <bitset>
 
 int main(int argv, char* argc[]) {
-	
+
 	try {
 
-	IO::MemoryStream ms;
-	IO::BitWriter bw(ms);
-	IO::BitReader br(ms);
+		IO::Buffer buffer(100, true);
+		IO::MemoryStream ms(buffer.Address(), buffer.Size());
 
-	//for (signed int i = 0; i <= 5; ++i)
-	//	bw.WriteInteger(-6, -7, -i);
-	//bw.WriteInteger(INT_MAX);
-	bw.WriteShort((short)5, 1, 7);
-	bw.Flush();
+		IO::BitWriter bw(ms);
+		IO::BitReader br(ms);
 
-	std::cout << "Write OK\n";
+		bw.WriteString("Hello, world!");
+		bw.Flush();
 
-	ms.Seek(0);
+		ms.Seek(0);
 
-	short value = 0;
-	br.ReadShort(value, 1, 7);
+		buffer.Shift(-5);
 
-	std::cout << "Read: " << value;
-	
+		std::string value;
+		std::cout << "Bytes read: " << br.ReadString(value) << std::endl;
+		std::cout << value;
+
+		//size_t bytes_read;
+		//do {
+		//	value.clear();
+		//	bytes_read = br.ReadString(value);
+		//	std::cout << "\nBytes Read: " << bytes_read << std::endl;
+		//	std::cout << value;
+		//} while (bytes_read);
+
+
 	}
 	catch (Exception& ex) {
 
 		std::cout << ex.what();
-		
+
 	}
 
 	getchar();

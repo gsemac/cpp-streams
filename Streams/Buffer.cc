@@ -9,7 +9,7 @@ namespace IO {
 
 		_size = bytes;
 
-		if (bytes)
+		if (bytes > 0)
 			if (zero)
 				_buffer = (Byte*)calloc(bytes, sizeof(Byte));
 			else
@@ -20,8 +20,8 @@ namespace IO {
 	}
 	Buffer::~Buffer() {
 
-		if (_size > 0)
-			delete _buffer;
+		if (_buffer != nullptr)
+			free(_buffer);
 
 		_buffer = nullptr;
 		_size = 0;
@@ -137,7 +137,7 @@ namespace IO {
 			// Zero-out the new memory (if there is new memory).
 			if (zero && bytes > _size)
 				memset(_buffer + _size, 0, bytes - _size);
-			
+
 		}
 		else if (zero)
 			// If the buffer has yet to be created, create a new zeroed buffer.
@@ -145,7 +145,7 @@ namespace IO {
 		else
 			// If the buffer has yet to be created, create a new unitialized buffer.
 			_buffer = (Byte*)malloc(bytes);
-		
+
 		// Update the size.
 		_size = bytes;
 

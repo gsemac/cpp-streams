@@ -11,7 +11,7 @@ namespace IO {
 		// Initializes a new instance of the MemoryStream class with an expandable capacity initialized as specified.
 		MemoryStream(size_t capacity);
 		// Initializes a new non-resizable instance of the MemoryStream class based on the specified byte array.
-		MemoryStream(const char* buffer, size_t size);
+		MemoryStream(Byte* buffer, size_t size);
 		// Releases all resources used by the Stream.
 		virtual ~MemoryStream();
 
@@ -53,6 +53,7 @@ namespace IO {
 		virtual bool CanWrite() const override;
 
 	protected:
+		bool _owns_buffer;
 		Byte* __buffer;
 		size_t __length;
 		size_t __capacity;

@@ -15,13 +15,16 @@ namespace IO {
 		__capacity = capacity;
 		__buffer = (Byte*)malloc(capacity);
 		__position = 0;
+		_owns_buffer = true;
 
 	}
-	MemoryStream::MemoryStream(const char* buffer, size_t size) : MemoryStream(size) {
+	MemoryStream::MemoryStream(Byte* buffer, size_t size) {
 
-		__buffer = (Byte*)memcpy(__buffer, buffer, size);
 		__length = size;
 		__capacity = size;
+		__buffer = buffer;
+		__position = 0;
+		_owns_buffer = false;
 
 	}
 	MemoryStream::~MemoryStream() {
@@ -160,7 +163,7 @@ namespace IO {
 	}
 	void MemoryStream::Close() {
 
-		if (__buffer)
+		if (__buffer && _owns_buffer)
 			free(__buffer);
 		__buffer = nullptr;
 
@@ -244,6 +247,10 @@ namespace IO {
 	}
 	void MemoryStream::Reserve(size_t capacity) {
 
+		// If we don't own the buffer, don't attempt to resize it.
+		if (!_owns_buffer)
+			throw NotSupportedException("Memory stream is not expandable.");
+
 		// If the new capacity is less than the current capacity, do nothing.
 		if (__capacity >= capacity)
 			return;
@@ -256,6 +263,10 @@ namespace IO {
 
 	}
 	void MemoryStream::Resize(size_t size, Byte value) {
+		
+		// If we don't own the buffer, don't attempt to resize it.
+		if (!_owns_buffer)
+			throw NotSupportedException("Memory stream is not expandable.");
 
 		// Adjust the size of the buffer.
 		__buffer = (Byte*)realloc(__buffer, size);
@@ -278,7 +289,7 @@ namespace IO {
 	void MemoryStream::AllocateBytes(size_t bytes) {
 
 		// Calculate the required capacity. Note that the position may be greater than the length.
-		size_t required_capacity = (std::max)(__length, __position) + bytes;
+		size_t required_capacity = __position + bytes;
 
 		// Increase buffer capacity if needed.
 		if (required_capacity > __capacity) {

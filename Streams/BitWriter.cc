@@ -169,9 +169,9 @@ namespace IO {
 	}
 	void BitWriter::WriteString(const char* value, size_t offset, size_t length) {
 
-		value += offset;
+		size_t index = offset;
 		for (size_t i = 0; i < length; ++i)
-			WriteByte(*(value++));
+			WriteByte(*(value + index++));
 
 	}
 	void BitWriter::WriteString(const std::string& value) {
