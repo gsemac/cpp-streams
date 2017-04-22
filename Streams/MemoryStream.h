@@ -54,10 +54,10 @@ namespace IO {
 
 	protected:
 		bool _owns_buffer;
-		Byte* __buffer;
-		size_t __length;
-		size_t __capacity;
-		size_t __position;
+		Byte* _buffer;
+		size_t _length;
+		size_t _capacity;
+		size_t _position;
 
 		// Expands the buffer to contain a specified number of additional bytes.
 		virtual void AllocateBytes(size_t bytes);
