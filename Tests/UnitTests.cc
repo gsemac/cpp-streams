@@ -27,6 +27,7 @@ public:
 		Assert::AreEqual(3, IO::BitsRequired(2, 7));
 
 	}
+
 	};
 
 	TEST_CLASS(BitWriterTests) {
@@ -45,12 +46,12 @@ public:
 
 		// Write so that the stream looks like this:
 		// 00100001 10000010
-		bw.BitSeek(2, IO::SeekOrigin::Begin);
+		bw.SeekBits(2, IO::SeekOrigin::Begin);
 		bw.WriteBool(1);
-		bw.BitSeek(4, IO::SeekOrigin::Current);
+		bw.SeekBits(4, IO::SeekOrigin::Current);
 		bw.WriteBool(1);
 		bw.WriteBool(1);
-		bw.BitSeek(-2, IO::SeekOrigin::End);
+		bw.SeekBits(-2, IO::SeekOrigin::End);
 		bw.WriteBool(1);
 		bw.Flush();
 
@@ -66,6 +67,7 @@ public:
 		Assert::AreEqual(IO::Byte(0b10000010), bytes[1]);
 
 	}
+
 	};
 
 	TEST_CLASS(BitReaderTests) {
@@ -107,6 +109,7 @@ public:
 		Assert::AreEqual(UINT_MAX, value);
 
 	}
+
 	// Tests that a BitReader can accurately read multiple positively-bounded signed integers written by a BitWriter.
 	TEST_METHOD(ReadMultiplePositivelyBoundedSignedIntegers) {
 
@@ -198,9 +201,10 @@ public:
 		Assert::AreEqual(INT_MIN, value);
 
 	}
+
 	// Tests that bit-level seeking from the beginning of a stream with a single byte is accurate.
 	TEST_METHOD(BitSeekFromBeginningOfStreamWithSingleByte) {
-	
+
 		IO::MemoryStream ms;
 		IO::BitWriter bw(ms);
 		IO::BitReader br(ms);
@@ -212,13 +216,13 @@ public:
 
 		bool value;
 
-		br.BitSeek(1);
+		br.SeekBits(1);
 		br.ReadBool(value);
 		Assert::AreEqual(true, value);
 
-		br.BitSeek(2);
+		br.SeekBits(2);
 		br.ReadBool(value);
-		Assert::AreEqual(false, value);		
+		Assert::AreEqual(false, value);
 
 	}
 	// Tests that a BitReader can accurately read bytes written by a BitWriter that are unaligned to byte boundaries.
@@ -235,7 +239,7 @@ public:
 
 		ms.Seek(0);
 
-		br.BitSeek(1);
+		br.SeekBits(1);
 
 		IO::Byte output[sizeof(input)];
 		br.ReadBytes(output, sizeof(output));
@@ -244,6 +248,8 @@ public:
 			Assert::AreEqual(input[i], output[i]);
 
 	}
+
+	// Tests that a BitReader can accurately read an unbounded char written by a BitWriter.
 	TEST_METHOD(ReadUnboundedSignedChar) {
 
 		IO::MemoryStream ms;
@@ -257,10 +263,11 @@ public:
 
 		signed char value;
 		br.ReadChar(value);
-	
-		Assert::AreEqual(0,0);
+
+		Assert::AreEqual((signed char)65, value);
 
 	}
+	// Tests that a BitReader can accurately read a bounded char written by a BitWriter.
 	TEST_METHOD(ReadBoundedSignedChar) {
 
 		IO::MemoryStream ms;
@@ -278,6 +285,85 @@ public:
 		Assert::AreEqual((signed char)3, value);
 
 	}
+
+	// Tests that a BitReader can accurately read a float written by a BitWriter.
+	TEST_METHOD(ReadFloat) {
+
+		IO::MemoryStream ms;
+		IO::BitWriter bw(ms);
+		IO::BitReader br(ms);
+
+		bw.WriteFloat(0.75f);
+		bw.Flush();
+
+		ms.Seek(0);
+
+		float value;
+		br.ReadFloat(value);
+
+		Assert::AreEqual(0.75f, value);
+
+	}
+
+	// Tests that a BitReader can accurately read an std::string written by a BitWriter.
+	TEST_METHOD(ReadString) {
+
+		IO::MemoryStream ms;
+		IO::BitWriter bw(ms);
+		IO::BitReader br(ms);
+
+		std::string str = "Hello, world!";
+		bw.WriteString(str);
+		bw.Flush();
+
+		ms.Seek(0);
+
+		std::string value;
+		br.ReadString(value);
+
+		Assert::AreEqual(str, value);
+
+	}
+	// Tests that a BitReader can accurately read a c-string written by a BitWriter.
+	TEST_METHOD(ReadCString) {
+
+		IO::MemoryStream ms;
+		IO::BitWriter bw(ms);
+		IO::BitReader br(ms);
+
+		const char str[] = "Hello, world!";
+		bw.WriteString(str);
+		bw.Flush();
+
+		ms.Seek(0);
+
+		char value[14];
+		br.ReadString(value);
+
+		Assert::IsTrue(std::strcmp(str, value) == 0);
+
+	}
+
+	// Tests that flushing reads on the read buffer to the underlying stream seeks the stream backwards appropriately.
+	TEST_METHOD(FlushRead) {
+
+		IO::MemoryStream ms(10);
+		for (int i = 0; i < ms.Capacity(); ++i)
+			ms.WriteByte(0);
+		ms.Seek(0);
+		IO::BitReader br(ms);
+
+		// Attempt to read something so that the read buffer is filled.
+		bool value;
+		br.ReadBool(value);
+		
+		// Flush reads to the stream. Since we have read a single bit, the stream should be seeked one byte forward.
+		br.Flush();
+
+		Assert::AreEqual(1U, ms.Position());
+
+	}
+
 	};
 
 }

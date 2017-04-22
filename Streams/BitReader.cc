@@ -54,6 +54,7 @@ namespace IO {
 		_stream->Flush();
 
 	}
+
 	void BitReader::Seek(long long position, SeekOrigin offset) {
 
 		// Flush reads performed on the buffer.
@@ -68,7 +69,7 @@ namespace IO {
 		Seek(position, IO::SeekOrigin::Begin);
 
 	}
-	void BitReader::BitSeek(long long bits, SeekOrigin offset) {
+	void BitReader::SeekBits(long long bits, SeekOrigin offset) {
 
 		// Flush the read buffer.
 		FlushRead();
@@ -98,9 +99,9 @@ namespace IO {
 		_byte_offset = 0;
 
 	}
-	void BitReader::BitSeek(long long position) {
+	void BitReader::SeekBits(long long position) {
 
-		BitSeek(position, IO::SeekOrigin::Begin);
+		SeekBits(position, IO::SeekOrigin::Begin);
 
 	}
 
@@ -299,17 +300,7 @@ namespace IO {
 		return true;
 
 	}
-
-	void BitReader::FlushRead() {
-
-		// Adjust the seek position in the underlying stream to match the seeks performed on the read buffer.
-		// e.g., if we've seeked 1 byte into a 32-bit buffer, we need to seek the stream back 31 bytes.
-
-		// Clear the byte/bit positions and reset the read buffer.
-		ClearBuffer();
-
-	}
-
+	
 	void BitReader::FillBuffer() {
 
 		// Read as much data from the stream as possible into 
@@ -327,11 +318,24 @@ namespace IO {
 		_bit_offset = 0;
 
 	}
+	void BitReader::FlushRead() {
+
+		// Adjust the seek position in the underlying stream to match the seeks performed on the read buffer.
+		// e.g., if we've seeked 1 byte into a 32-bit buffer, we need to seek the stream back 31 bytes.
+		size_t off = _byte_offset + (_bit_offset > 0);
+		if (off - _bytes_read != 0)
+			_stream->Seek((long long)off - (long long)_bytes_read, IO::SeekOrigin::Current);
+
+		// Clear the byte/bit positions and reset the read buffer.
+		ClearBuffer();
+
+	}
 	size_t BitReader::UnreadBitsLeft() const {
 
 		return BytesToBits(_bytes_read - _byte_offset) - _bit_offset;
 
 	}
+
 	void BitReader::IncrementBitOffset() {
 
 		if (_bit_offset == 7) {
@@ -346,7 +350,6 @@ namespace IO {
 			++_bit_offset;
 
 	}
-
 	bool BitReader::ReadBits(uint32_t& value, int bits) {
 
 		// If we've read to the end of the read buffer, reset the offset pointers.

@@ -25,9 +25,9 @@ namespace IO {
 		// Sets the position within the current stream.
 		void Seek(long long position);
 		// Sets the bit position within the current stream.
-		void BitSeek(long long bits, SeekOrigin offset);
+		void SeekBits(long long bits, SeekOrigin offset);
 		// Sets the bit position within the current stream.
-		void BitSeek(long long bits);
+		void SeekBits(long long bits);
 
 		void WriteBool(bool value);
 		void WriteByte(Byte value, Byte min = 0, Byte max = UCHAR_MAX);
@@ -45,12 +45,12 @@ namespace IO {
 		void WriteShort(signed short value, signed short min = SHRT_MIN, signed short max = SHRT_MAX);
 		
 	private:
-		Stream* __stream;
-		bool __owns_stream;
-		Byte* __buffer;
+		Stream* _stream;
+		bool _owns_stream;
+		Byte* _buffer;
 		size_t _buffer_size;
-		size_t __byte_offset;
-		Byte __bit_offset;
+		size_t _byte_offset;
+		Byte _bit_offset;
 
 		BitWriter();
 
