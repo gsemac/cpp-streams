@@ -212,11 +212,11 @@ public:
 
 		bool value;
 
-		br.BitSeek(1);
+		br.SeekBits(1);
 		br.ReadBool(value);
 		Assert::AreEqual(true, value);
 
-		br.BitSeek(2);
+		br.SeekBits(2);
 		br.ReadBool(value);
 		Assert::AreEqual(false, value);
 
@@ -235,7 +235,7 @@ public:
 
 		ms.Seek(0);
 
-		br.BitSeek(1);
+		br.SeekBits(1);
 
 		IO::Byte output[sizeof(input)];
 		br.ReadBytes(output, sizeof(output));

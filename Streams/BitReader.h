@@ -25,9 +25,9 @@ namespace IO {
 		// Sets the position within the current stream.
 		void Seek(long long position);
 		// Sets the bit position within the current stream.
-		void BitSeek(long long bits, SeekOrigin offset);
+		void SeekBits(long long bits, SeekOrigin offset);
 		// Sets the bit position within the current stream.
-		void BitSeek(long long bits);
+		void SeekBits(long long bits);
 		// Returns the next available byte, or -1 if no more bytes are available, and does not advance the read position.
 		int Peek();
 

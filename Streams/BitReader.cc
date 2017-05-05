@@ -79,7 +79,7 @@ namespace IO {
 		Seek(position, IO::SeekOrigin::Begin);
 
 	}
-	void BitReader::BitSeek(long long bits, SeekOrigin offset) {
+	void BitReader::SeekBits(long long bits, SeekOrigin offset) {
 
 		// Flush the read buffer.
 		if (_stream->CanSeek())
@@ -110,9 +110,9 @@ namespace IO {
 		_byte_offset = 0;
 
 	}
-	void BitReader::BitSeek(long long position) {
+	void BitReader::SeekBits(long long position) {
 
-		BitSeek(position, IO::SeekOrigin::Begin);
+		SeekBits(position, IO::SeekOrigin::Begin);
 
 	}
 	int BitReader::Peek() {
