@@ -12,10 +12,10 @@ namespace IO {
 		BitWriter(Stream& stream);
 		~BitWriter();
 
-		// Gets the underlying stream of the BinaryWriter.
+		// Gets the underlying stream of the BitWriter.
 		Stream& BaseStream();
 
-		// Closes the current BinaryWriter and the underlying stream.
+		// Closes the current BitWriter and the underlying stream.
 		void Close();
 		// Clears all buffers for the current writer and causes any buffered data to be written to the underlying device.
 		void Flush();
