@@ -9,11 +9,11 @@ namespace IO {
 
 	BitWriter::BitWriter() {
 
-		__stream = nullptr;
-		__owns_stream = false;
-		__buffer = nullptr;
-		__byte_offset = 0;
-		__bit_offset = 0;
+		_stream = nullptr;
+		_owns_stream = false;
+		_buffer = nullptr;
+		_byte_offset = 0;
+		_bit_offset = 0;
 
 		// Set buffer to 64-bits initially, which should be enough to contain most primitive types.
 		_buffer_size = 8;
@@ -22,59 +22,69 @@ namespace IO {
 	}
 	BitWriter::BitWriter(Stream& stream) : BitWriter() {
 
-		__stream = &stream;
+		_stream = &stream;
 
 	}
 	BitWriter::~BitWriter() {
 
+		// Flush writes to the underlying stream.
+		FlushWrite();
+
 		// Free the write buffer if one has been allocated.
-		if (__buffer)
-			free(__buffer);
+		if (_buffer)
+			free(_buffer);
 
 	}
 
 	Stream& BitWriter::BaseStream() {
 
 		// If there is no stream, throw error.
-		if (!__stream)
+		if (!_stream)
 			throw IO::IOException();
 
-		return *__stream;
+		return *_stream;
 
 	}
 
 	void BitWriter::Close() {
 
+		// If there is no stream, throw error.
+		if (!_stream)
+			throw IO::IOException();
+
+		// Flush writes to the underlying stream.
+		FlushWrite();
+
 		// Close the underlying stream.
-		if (__stream)
-			__stream->Close();
-		__stream = nullptr;
+		if (_stream)
+			_stream->Close();
+		_stream = nullptr;
 
 	}
 	void BitWriter::Flush() {
 
 		// If there is no stream, throw error.
-		if (!__stream)
+		if (!_stream)
 			throw IO::IOException();
 
 		// Flush the write buffer.
 		FlushWrite();
 
 		// Flush the underlying stream.
-		__stream->Flush();
+		_stream->Flush();
 
 	}
 	void BitWriter::Seek(long long position, SeekOrigin offset) {
 
 		// If there is no stream or the stream does not support seeking, throw error.
-		if (!__stream || !__stream->CanSeek())
+		if (!_stream || !_stream->CanSeek())
 			throw NotSupportedException();
 
 		// Flush any data in the write buffer to the stream before seeking to a new position.
 		FlushWrite();
 
 		// Seek the underlying stream.
-		__stream->Seek(position, offset);
+		_stream->Seek(position, offset);
 
 	}
 	void BitWriter::Seek(long long position) {
@@ -82,21 +92,21 @@ namespace IO {
 		Seek(position, SeekOrigin::Begin);
 
 	}
-	void BitWriter::BitSeek(long long bits, SeekOrigin offset) {
+	void BitWriter::SeekBits(long long bits, SeekOrigin offset) {
 
 		// Throw an exception of the underlying stream does not support reading.
 		// We will need to read from the stream into the write buffer in order to modify individual bits.
-		if (!__stream || !__stream->CanRead())
+		if (!_stream || !_stream->CanRead())
 			throw NotSupportedException();
 
 		// Convert the offset into one relative to the start of the stream.
 		switch (offset) {
 		case SeekOrigin::Current:
-			bits += __stream->Position() * 8;
-			bits += __bit_offset;
+			bits += _stream->Position() * 8;
+			bits += _bit_offset;
 			break;
 		case SeekOrigin::End:
-			bits += __stream->Length() * 8;
+			bits += _stream->Length() * 8;
 			break;
 		}
 
@@ -110,19 +120,19 @@ namespace IO {
 		Seek(bytes);
 
 		// Fill the write buffer with data from the stream.
-		long long bytes_read = __stream->Read(__buffer, 0, _buffer_size);
+		long long bytes_read = _stream->Read(_buffer, 0, _buffer_size);
 	
 		// Seek back to the original position.
 		Seek(-bytes_read, SeekOrigin::Current);
 
 		// Set the bit and byte offsets.
-		__bit_offset = (IO::Byte)bits;
-		__byte_offset = 0;
+		_bit_offset = (IO::Byte)bits;
+		_byte_offset = 0;
 
 	}
-	void BitWriter::BitSeek(long long bits) {
+	void BitWriter::SeekBits(long long bits) {
 
-		BitSeek(bits, SeekOrigin::Begin);
+		SeekBits(bits, SeekOrigin::Begin);
 
 	}
 
@@ -226,9 +236,9 @@ namespace IO {
 	void BitWriter::FlushWrite() {
 
 		// Write the buffer to the underlying stream. If we've written any bits to the current byte, flush it.
-		size_t length = __byte_offset + (__bit_offset > 0);
-		if (__buffer && length > 0)
-			__stream->Write(__buffer, 0, length);
+		size_t length = _byte_offset + (_bit_offset > 0);
+		if (_buffer && length > 0)
+			_stream->Write(_buffer, 0, length);
 
 		// Reset the buffer.
 		ClearBuffer();
@@ -241,65 +251,65 @@ namespace IO {
 		Byte* new_buffer = (Byte*)calloc(bytes, sizeof(Byte));
 
 		// If the buffer isn't empty, copy the contents of the old buffer into the new buffer.
-		if (__buffer && (__byte_offset > 0 || __bit_offset > 0))
-			memcpy(new_buffer, __buffer, __byte_offset > 0 ? __byte_offset : 1);
+		if (_buffer && (_byte_offset > 0 || _bit_offset > 0))
+			memcpy(new_buffer, _buffer, _byte_offset > 0 ? _byte_offset : 1);
 
 		// Free the old buffer (if it exists).
-		if (__buffer)
-			free(__buffer);
+		if (_buffer)
+			free(_buffer);
 
 		// Apply the new buffer.
-		__buffer = new_buffer;
+		_buffer = new_buffer;
 
 	}
 	void BitWriter::ClearBuffer() {
 
 		// Zero-out the portion of the buffer we've written to.
-		size_t length = __byte_offset + (__bit_offset > 0);
-		memset(__buffer, 0, length);
+		size_t length = _byte_offset + (_bit_offset > 0);
+		memset(_buffer, 0, length);
 
 		// Reset buffer offsets.
-		__byte_offset = 0;
-		__bit_offset = 0;
+		_byte_offset = 0;
+		_bit_offset = 0;
 
 	}
 
 	size_t BitWriter::BitsRemaining() const {
 
-		return (_buffer_size * 8) - (__byte_offset * 8 + __bit_offset);
+		return (_buffer_size * 8) - (_byte_offset * 8 + _bit_offset);
 
 	}
 	void BitWriter::IncrementBitOffset() {
 
-		if (__bit_offset == 7) {
+		if (_bit_offset == 7) {
 
 			// If we've reached the end of the byte, reset bit count, increment byte count.
-			__bit_offset = 0;
-			++__byte_offset;
+			_bit_offset = 0;
+			++_byte_offset;
 
 			// If we've reached the end of the buffer, flush write.
-			if (__byte_offset == _buffer_size)
+			if (_byte_offset == _buffer_size)
 				FlushWrite();
 
 		}
 		else
-			++__bit_offset;
+			++_bit_offset;
 
 	}
 
 	void BitWriter::WriteBits(uint32_t value, int bits) {
 
 		// If we're writing a single byte and the bit offset is 0, write it directly.
-		if (bits == 8 && !__bit_offset) {
-			__buffer[__byte_offset++] = value;
-			if (__byte_offset == _buffer_size)
+		if (bits == 8 && !_bit_offset) {
+			_buffer[_byte_offset++] = value;
+			if (_byte_offset == _buffer_size)
 				FlushWrite();
 			return;
 		}
 
 		// Write "bits" least-significant bits from the value.
 		for (int i = bits - 1; i >= 0; --i) {
-			__buffer[__byte_offset] |= ((value >> i) & 1) << (7 - __bit_offset);
+			_buffer[_byte_offset] |= ((value >> i) & 1) << (7 - _bit_offset);
 			IncrementBitOffset();
 		}
 

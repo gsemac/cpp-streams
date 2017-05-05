@@ -16,31 +16,20 @@ int main(int argv, char* argc[]) {
 
 	try {
 
-		IO::Buffer buffer(100, true);
-		IO::MemoryStream ms(buffer.Address(), buffer.Size());
+		IO::MemoryStream ms(10);
 
-		IO::BitWriter bw(ms);
 		IO::BitReader br(ms);
 
-		bw.WriteString("Hello, world!");
-		bw.Flush();
+		// Attempt to read something so that the read buffer is filled.
+		bool value;
+		br.ReadBool(value);
 
-		ms.Seek(0);
+		std::cout << ms.Position() << std::endl;
 
-		buffer.Shift(-5);
+		// Flush reads to the stream. Since we have read a single bit, the stream should be seeked one byte forward.
+		br.Flush();
 
-		std::string value;
-		std::cout << "Bytes read: " << br.ReadString(value) << std::endl;
-		std::cout << value;
-
-		//size_t bytes_read;
-		//do {
-		//	value.clear();
-		//	bytes_read = br.ReadString(value);
-		//	std::cout << "\nBytes Read: " << bytes_read << std::endl;
-		//	std::cout << value;
-		//} while (bytes_read);
-
+		std::cout << ms.Position() << std::endl;
 
 	}
 	catch (Exception& ex) {

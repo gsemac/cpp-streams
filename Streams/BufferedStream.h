@@ -39,12 +39,12 @@ namespace IO {
 		bool CanWrite() const override;
 
 	private:
-		Stream* __stream;		// Address of the underlying stream.
-		Byte* __buffer;			// Address of buffer (shared for read/write).
-		size_t __buffer_size;	// Size of the buffer.
-		long long __rpos;		// Read position (in the buffer).
-		long long __rlen;		// Read length (number of bytes read into the buffer).
-		long long __wpos;		// Write position (in the buffer).
+		Stream* _stream;		// Address of the underlying stream.
+		Byte* _buffer;			// Address of buffer (shared for read/write).
+		size_t _buffer_size;	// Size of the buffer.
+		long long _rpos;		// Read position (in the buffer).
+		long long _rlen;		// Read length (number of bytes read into the buffer).
+		long long _wpos;		// Write position (in the buffer).
 
 		void FlushRead();
 		void FlushWrite();

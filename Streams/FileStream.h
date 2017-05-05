@@ -72,12 +72,12 @@ namespace IO {
 		virtual bool CanWrite() const override;
 
 	protected:
-		std::fstream __stream;
-		std::string __path;
-		std::size_t __position;
-		unsigned int __flags;
-		unsigned int __access_flags;
-		bool __last_read;
+		std::fstream _stream;
+		std::string _path;
+		std::size_t _position;
+		unsigned int _flags;
+		unsigned int _access_flags;
+		bool _last_read;
 
 	private:
 		// Returns true if a file with the given path exists.
