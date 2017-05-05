@@ -7,6 +7,8 @@
 
 namespace IO {
 
+	// Public methods
+
 	BitReader::BitReader(Stream& stream) :
 		_buffer(8, true) {
 
@@ -19,11 +21,16 @@ namespace IO {
 	BitReader::~BitReader() {
 
 		// Flush reads to the underlying stream.
-		FlushRead();
+		if (_stream && _stream->CanSeek())
+			FlushRead();
 
 	}
 
 	Stream& BitReader::BaseStream() {
+
+		// If there is no stream, throw an exception.
+		if (!_stream)
+			throw IO::IOException();
 
 		return *_stream;
 
@@ -31,24 +38,27 @@ namespace IO {
 
 	void BitReader::Close() {
 
-		// If there is no stream, throw error.
+		// If there is no stream, throw an exception.
 		if (!_stream)
 			throw IO::IOException();
 
+		// Flush reads performed on the read buffer.
+		if (_stream->CanSeek())
+			FlushRead();
+
 		// Close the underlying stream.
-		if (_stream)
-			_stream->Close();
-		_stream = nullptr;
+		_stream->Close();
 
 	}
 	void BitReader::Flush() {
 
-		// If there is no stream, throw error.
+		// If there is no stream, throw an exception.
 		if (!_stream)
 			throw IO::IOException();
 
 		// Flush the read buffer.
-		FlushRead();
+		if (_stream->CanSeek())
+			FlushRead();
 
 		// Flush the underlying stream.
 		_stream->Flush();
@@ -57,7 +67,8 @@ namespace IO {
 	void BitReader::Seek(long long position, SeekOrigin offset) {
 
 		// Flush reads performed on the buffer.
-		FlushRead();
+		if (_stream->CanSeek())
+			FlushRead();
 
 		// Seek the underlying stream.
 		_stream->Seek(position, offset);
@@ -71,7 +82,8 @@ namespace IO {
 	void BitReader::BitSeek(long long bits, SeekOrigin offset) {
 
 		// Flush the read buffer.
-		FlushRead();
+		if (_stream->CanSeek())
+			FlushRead();
 
 		// Convert the offset into one relative to the start of the stream.
 		switch (offset) {
@@ -103,14 +115,21 @@ namespace IO {
 		BitSeek(position, IO::SeekOrigin::Begin);
 
 	}
-
 	int BitReader::Peek() {
 
+		// Attempt to read a byte from the buffer.
 		Byte value;
-		if (ReadByte(value))
+		if (ReadByte(value)) {
+
+			// If the read was successful, step the read position back a byte.
+			_byte_offset -= 1;
+
+			// Return the result.
 			return value;
 
-		return -1;
+		} else
+			// No bytes were available to read.
+			return -1;
 
 	}
 
@@ -176,7 +195,7 @@ namespace IO {
 			if (read == '\0')
 				break;
 		}
-			
+
 		return index;
 
 	}
@@ -300,16 +319,24 @@ namespace IO {
 
 	}
 
+	// Protected methods
+
 	void BitReader::FlushRead() {
 
 		// Adjust the seek position in the underlying stream to match the seeks performed on the read buffer.
 		// e.g., if we've seeked 1 byte into a 32-bit buffer, we need to seek the stream back 31 bytes.
+		
+		// If we've read to the end of the buffer, there's nothing to flush.
+		if (_byte_offset >= _bytes_read)
+			return;
+		
+		// Seek the stream to match reads performed on the read buffer.
+		_stream->Seek((long long)_byte_offset - _bytes_read, IO::SeekOrigin::Current);
 
 		// Clear the byte/bit positions and reset the read buffer.
 		ClearBuffer();
 
 	}
-
 	void BitReader::FillBuffer() {
 
 		// Read as much data from the stream as possible into 
@@ -346,7 +373,6 @@ namespace IO {
 			++_bit_offset;
 
 	}
-
 	bool BitReader::ReadBits(uint32_t& value, int bits) {
 
 		// If we've read to the end of the read buffer, reset the offset pointers.

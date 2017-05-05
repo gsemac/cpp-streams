@@ -200,7 +200,7 @@ public:
 	}
 	// Tests that bit-level seeking from the beginning of a stream with a single byte is accurate.
 	TEST_METHOD(BitSeekFromBeginningOfStreamWithSingleByte) {
-	
+
 		IO::MemoryStream ms;
 		IO::BitWriter bw(ms);
 		IO::BitReader br(ms);
@@ -218,7 +218,7 @@ public:
 
 		br.BitSeek(2);
 		br.ReadBool(value);
-		Assert::AreEqual(false, value);		
+		Assert::AreEqual(false, value);
 
 	}
 	// Tests that a BitReader can accurately read bytes written by a BitWriter that are unaligned to byte boundaries.
@@ -244,6 +244,7 @@ public:
 			Assert::AreEqual(input[i], output[i]);
 
 	}
+	// Tests that a BitReader can accurately read a single unbounded signed char written by a BitWriter.
 	TEST_METHOD(ReadUnboundedSignedChar) {
 
 		IO::MemoryStream ms;
@@ -257,10 +258,11 @@ public:
 
 		signed char value;
 		br.ReadChar(value);
-	
-		Assert::AreEqual(0,0);
+
+		Assert::AreEqual(0, 0);
 
 	}
+	// Tests that a BitReader can accurately read a single bounded signed char written by a BitWriter.
 	TEST_METHOD(ReadBoundedSignedChar) {
 
 		IO::MemoryStream ms;
@@ -278,6 +280,69 @@ public:
 		Assert::AreEqual((signed char)3, value);
 
 	}
-	};
+	// Tests that reads on the read buffer are properly flushed to the underlying stream.
+	TEST_METHOD(FlushReadSeeksUnderlyingStream) {
 
+		IO::MemoryStream ms;
+		IO::BitWriter bw(ms);
+		IO::BitReader br(ms);
+
+		bw.WriteByte(1);
+		bw.WriteByte(2);
+		bw.WriteByte(3);
+		bw.Flush();
+
+		ms.Seek(0);
+
+		IO::Byte value;
+		br.ReadByte(value);
+		br.Flush();
+
+		Assert::AreEqual(1U, ms.Position());
+
+	}
+	// Tests that the Peek() method properly returns the next byte in the stream.
+	TEST_METHOD(PeekReturnsNextByte) {
+
+		IO::MemoryStream ms;
+		IO::BitWriter bw(ms);
+		IO::BitReader br(ms);
+
+		bw.WriteByte(1);
+		bw.WriteByte(2);
+		bw.Flush();
+
+		ms.Seek(1);
+
+		IO::Byte value;
+		value = br.Peek();
+
+		Assert::AreEqual((IO::Byte)2, value);
+
+	}
+	// Tests that the Peek() method does not advance the read position.
+	TEST_METHOD(PeekDoesNotAdvanceReadPosition) {
+
+		IO::MemoryStream ms;
+		IO::BitWriter bw(ms);
+		IO::BitReader br(ms);
+
+		bw.WriteByte(1);
+		bw.WriteByte(2);
+		bw.Flush();
+
+		ms.Seek(0);		
+
+		br.Peek();
+
+		// If peeking didn't advance the read position, we should read the first byte.
+		IO::Byte value;
+		br.ReadByte(value);
+
+		Assert::AreEqual((IO::Byte)1, value);
+
+	}
+
+	};
+	
 }
