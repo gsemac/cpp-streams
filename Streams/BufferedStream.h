@@ -38,16 +38,25 @@ namespace IO {
 		// Gets a value indicating whether the current stream supports writing.
 		bool CanWrite() const override;
 
-	private:
-		Stream* _stream;		// Address of the underlying stream.
-		Byte* _buffer;			// Address of buffer (shared for read/write).
-		size_t _buffer_size;	// Size of the buffer.
-		long long _rpos;		// Read position (in the buffer).
-		long long _rlen;		// Read length (number of bytes read into the buffer).
-		long long _wpos;		// Write position (in the buffer).
-
+	protected:
+		// Flushes reads performed on the buffer to the underlying stream.
 		void FlushRead();
+		// Flushes writes performed on the buffer to the underlying stream.
 		void FlushWrite();
+
+	private:
+		// The underlying stream.
+		Stream* _stream;
+		// The buffer, shared for both read/write operations.
+		Byte* _buffer;
+		// The size of the buffer.
+		size_t _buffer_size;
+		// The read position in the buffer.
+		long long _read_offset;
+		// The number of bytes read into the buffer.
+		long long _read_length;
+		// The write position in the buffer.
+		long long _write_offset;
 
 	};
 
