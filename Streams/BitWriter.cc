@@ -7,6 +7,8 @@
 
 namespace IO {
 
+	// Public methods
+
 	BitWriter::BitWriter() {
 
 		_stream = nullptr;
@@ -38,7 +40,7 @@ namespace IO {
 
 	Stream& BitWriter::BaseStream() {
 
-		// If there is no stream, throw error.
+		// If there is no stream, throw an exception.
 		if (!_stream)
 			throw IO::IOException();
 
@@ -48,7 +50,7 @@ namespace IO {
 
 	void BitWriter::Close() {
 
-		// If there is no stream, throw error.
+		// If there is no stream, throw an exception.
 		if (!_stream)
 			throw IO::IOException();
 
@@ -56,14 +58,12 @@ namespace IO {
 		FlushWrite();
 
 		// Close the underlying stream.
-		if (_stream)
-			_stream->Close();
-		_stream = nullptr;
+		_stream->Close();
 
 	}
 	void BitWriter::Flush() {
 
-		// If there is no stream, throw error.
+		// If there is no stream, throw an exception.
 		if (!_stream)
 			throw IO::IOException();
 
@@ -121,7 +121,7 @@ namespace IO {
 
 		// Fill the write buffer with data from the stream.
 		long long bytes_read = _stream->Read(_buffer, 0, _buffer_size);
-	
+
 		// Seek back to the original position.
 		Seek(-bytes_read, SeekOrigin::Current);
 
@@ -225,6 +225,8 @@ namespace IO {
 
 	}
 
+	// Protected methods
+
 	void BitWriter::FlushWrite() {
 
 		// Write the buffer to the underlying stream. If we've written any bits to the current byte, flush it.
@@ -236,7 +238,6 @@ namespace IO {
 		ClearBuffer();
 
 	}
-
 	void BitWriter::AllocateBuffer(size_t bytes) {
 
 		// Create a new buffer.
@@ -265,7 +266,6 @@ namespace IO {
 		_bit_offset = 0;
 
 	}
-
 	size_t BitWriter::BitsRemaining() const {
 
 		return (_buffer_size * 8) - (_byte_offset * 8 + _bit_offset);
@@ -288,7 +288,6 @@ namespace IO {
 			++_bit_offset;
 
 	}
-
 	void BitWriter::WriteBits(uint32_t value, int bits) {
 
 		// If we're writing a single byte and the bit offset is 0, write it directly.
