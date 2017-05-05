@@ -45,12 +45,12 @@ public:
 
 		// Write so that the stream looks like this:
 		// 00100001 10000010
-		bw.BitSeek(2, IO::SeekOrigin::Begin);
+		bw.SeekBits(2, IO::SeekOrigin::Begin);
 		bw.WriteBool(1);
-		bw.BitSeek(4, IO::SeekOrigin::Current);
+		bw.SeekBits(4, IO::SeekOrigin::Current);
 		bw.WriteBool(1);
 		bw.WriteBool(1);
-		bw.BitSeek(-2, IO::SeekOrigin::End);
+		bw.SeekBits(-2, IO::SeekOrigin::End);
 		bw.WriteBool(1);
 		bw.Flush();
 
@@ -259,7 +259,7 @@ public:
 		signed char value;
 		br.ReadChar(value);
 
-		Assert::AreEqual(0, 0);
+		Assert::AreEqual((signed char)65, value);
 
 	}
 	// Tests that a BitReader can accurately read a single bounded signed char written by a BitWriter.
@@ -278,6 +278,62 @@ public:
 		br.ReadChar(value, 1, 7);
 
 		Assert::AreEqual((signed char)3, value);
+
+	}
+	// Tests that a BitReader can accurately read a float written by a BitWriter.
+	TEST_METHOD(ReadFloat) {
+
+		IO::MemoryStream ms;
+		IO::BitWriter bw(ms);
+		IO::BitReader br(ms);
+
+		bw.WriteFloat(0.75f);
+		bw.Flush();
+
+		ms.Seek(0);
+
+		float value;
+		br.ReadFloat(value);
+
+		Assert::AreEqual(0.75f, value);
+
+	}
+	// Tests that a BitReader can accurately read an std::string written by a BitWriter.
+	TEST_METHOD(ReadString) {
+
+		IO::MemoryStream ms;
+		IO::BitWriter bw(ms);
+		IO::BitReader br(ms);
+
+		std::string str = "Hello, world!";
+		bw.WriteString(str);
+		bw.Flush();
+
+		ms.Seek(0);
+
+		std::string value;
+		br.ReadString(value);
+
+		Assert::AreEqual(str, value);
+
+	}
+	// Tests that a BitReader can accurately read a c-string written by a BitWriter.
+	TEST_METHOD(ReadCString) {
+
+		IO::MemoryStream ms;
+		IO::BitWriter bw(ms);
+		IO::BitReader br(ms);
+
+		const char str[] = "Hello, world!";
+		bw.WriteString(str);
+		bw.Flush();
+
+		ms.Seek(0);
+
+		char value[14];
+		br.ReadString(value);
+
+		Assert::IsTrue(std::strcmp(str, value) == 0);
 
 	}
 	// Tests that reads on the read buffer are properly flushed to the underlying stream.

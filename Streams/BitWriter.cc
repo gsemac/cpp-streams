@@ -211,14 +211,6 @@ namespace IO {
 		unsigned int umin = min + INT_MAX + 1;
 		unsigned int umax = max + INT_MAX + 1;
 
-		std::cout << "INT_MIN: " << INT_MIN << std::endl;
-		std::cout << "INT_MAX: " << INT_MAX << std::endl;
-		std::cout << "UINT_MAX: " << UINT_MAX << std::endl;
-		std::cout << "min    : " << min << std::endl;
-		std::cout << "max    : " << max << std::endl;
-		std::cout << "umin   : " << umin << std::endl;
-		std::cout << "umax   : " << umax << std::endl;
-
 		WriteInteger(uvalue, umin, umax);
 
 	}
