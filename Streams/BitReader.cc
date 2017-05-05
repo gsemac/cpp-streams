@@ -49,6 +49,9 @@ namespace IO {
 		// Close the underlying stream.
 		_stream->Close();
 
+		// Set the underlying stream to null.
+		_stream = nullptr;
+
 	}
 	void BitReader::Flush() {
 
