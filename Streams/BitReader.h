@@ -76,7 +76,7 @@ namespace IO {
 		// Reads "bits" bits from the read buffer into "value".
 		bool ReadBits(uint32_t& value, int bits);
 
-	public:
+	private:
 		// The underlying stream.
 		Stream* _stream;
 		// The buffer used for reads.
