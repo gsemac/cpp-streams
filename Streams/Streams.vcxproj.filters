@@ -33,9 +33,6 @@
     <ClInclude Include="BufferedStream.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="StreamWriter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="IO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
