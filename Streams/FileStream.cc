@@ -1,4 +1,5 @@
 #include "FileStream.h"
+#include "Exception.h"
 #include <cassert>
 #include <algorithm>
 #include <sys/stat.h>

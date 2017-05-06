@@ -1,6 +1,5 @@
 #pragma once
 #include "Stream.h"
-#include "Exception.h"
 #include <fstream>
 
 namespace IO {
@@ -72,18 +71,24 @@ namespace IO {
 		virtual bool CanWrite() const override;
 
 	protected:
-		std::fstream _stream;
-		std::string _path;
-		std::size_t _position;
-		unsigned int _flags;
-		unsigned int _access_flags;
-		bool _last_read;
-
-	private:
 		// Returns true if a file with the given path exists.
 		bool FileExists(const char* path);
 		// Initializes mode/access flag values.
 		void InitFlags(FileMode mode, FileAccess access);
+
+	private:
+		// The underlying stream.
+		std::fstream _stream;
+		// The path to the file the stream is accessing.
+		std::string _path;
+		// The current position in the stream.
+		std::size_t _position;
+		// Mode flags.
+		unsigned int _flags;
+		// File access flags.
+		unsigned int _access_flags;
+		// Set to true if the last action was a read (as opposed to a write).
+		bool _last_read;
 
 	};
 
