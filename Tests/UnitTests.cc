@@ -27,6 +27,28 @@ public:
 		Assert::AreEqual(3, IO::BitsRequired(2, 7));
 
 	}
+	// Tests setting individual bits.
+	TEST_METHOD(SetBit) {
+
+		IO::Byte value = 0;
+
+		// 0000 0110
+		IO::SetBit(value, 5, 1);
+		IO::SetBit(value, 6, 1);
+
+		Assert::AreEqual((IO::Byte)6, value);
+
+	}
+	// Tests reading individual bits.
+	TEST_METHOD(GetBit) {
+
+		IO::Byte value = 6;
+
+		Assert::AreEqual(true, IO::GetBit(value, 5));
+		Assert::AreEqual(true, IO::GetBit(value, 6));
+		Assert::AreEqual(false, IO::GetBit(value, 7));
+
+	}
 	};
 
 	TEST_CLASS(BitWriterTests) {

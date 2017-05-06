@@ -2,17 +2,18 @@
 #include "Exception.h"
 #include <cassert>
 #include <cmath>
+#define BITS_PER_BYTE 8
 
 namespace IO {
 
 	int BytesToBits(size_t bytes) {
 
-		return bytes * 8;
+		return bytes * BITS_PER_BYTE;
 
 	}
 	int BitsToBytes(size_t bits) {
 
-		return (int)(std::ceil)(bits / 8.0f);
+		return (int)(std::ceil)(bits / (float)BITS_PER_BYTE);
 
 	}
 
@@ -59,7 +60,12 @@ namespace IO {
 
 	bool GetBit(Byte byte, Byte bit) {
 
-		return (byte >> (7 - bit)) & 1;
+		return (byte >> (BITS_PER_BYTE - 1 - bit)) & 1;
+
+	}
+	void SetBit(Byte& byte, Byte bit, bool value) {
+
+		byte |= (value << (BITS_PER_BYTE - 1 - bit));
 
 	}
 

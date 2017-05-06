@@ -7,6 +7,7 @@
 #include "BitWriter.h"
 #include "BitReader.h"
 #include "Buffer.h"
+#include "Exception.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -16,20 +17,31 @@ int main(int argv, char* argc[]) {
 
 	try {
 
-		IO::MemoryStream ms(10);
+		IO::Buffer buffer(100, true);
+		IO::MemoryStream ms(buffer.Address(), buffer.Size());
 
+		IO::BitWriter bw(ms);
 		IO::BitReader br(ms);
 
-		// Attempt to read something so that the read buffer is filled.
-		bool value;
-		br.ReadBool(value);
+		bw.WriteString("Hello, world!");
+		bw.Flush();
 
-		std::cout << ms.Position() << std::endl;
+		ms.Seek(0);
 
-		// Flush reads to the stream. Since we have read a single bit, the stream should be seeked one byte forward.
-		br.Flush();
+		buffer.Shift(-5);
 
-		std::cout << ms.Position() << std::endl;
+		std::string value;
+		std::cout << "Bytes read: " << br.ReadString(value) << std::endl;
+		std::cout << value;
+
+		//size_t bytes_read;
+		//do {
+		//	value.clear();
+		//	bytes_read = br.ReadString(value);
+		//	std::cout << "\nBytes Read: " << bytes_read << std::endl;
+		//	std::cout << value;
+		//} while (bytes_read);
+
 
 	}
 	catch (Exception& ex) {

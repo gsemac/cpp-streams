@@ -15,7 +15,9 @@ namespace IO {
 	// Returns the number of bytes required to store the given number of distinct values.
 	int BitsRequired(uint32_t distinct_values);
 
-	// Returns the value of the nth bit from the given byte.
+	// Returns the value of the nth bit from the given byte, where 0 is the most-significant bit and 7 is the least-significant bit.
 	bool GetBit(Byte byte, Byte bit);
+	// Sets the nth bit of the given byte to the given value, where 0 is the most-significant bit and 7 is the least-significant bit.
+	void SetBit(Byte& byte, Byte bit, bool value);
 
 }
