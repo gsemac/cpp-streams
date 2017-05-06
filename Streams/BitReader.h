@@ -74,7 +74,7 @@ namespace IO {
 		// Increments the bit offset, resetting it back to 0 and incrementing the byte offset when appropriate.
 		void IncrementBitOffset();
 		// Reads "bits" bits from the read buffer into "value".
-		bool ReadBits(uint32_t& value, int bits);
+		bool ReadBits(uint32_t& value, unsigned int bits);
 
 	private:
 		// The underlying stream.

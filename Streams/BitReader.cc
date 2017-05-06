@@ -109,7 +109,7 @@ namespace IO {
 		_stream->Seek(bytes);
 
 		// Set the bit and byte offsets.
-		_bit_offset = bits;
+		_bit_offset = (IO::Byte)bits;
 		_byte_offset = 0;
 
 	}
@@ -376,7 +376,7 @@ namespace IO {
 			++_bit_offset;
 
 	}
-	bool BitReader::ReadBits(uint32_t& value, int bits) {
+	bool BitReader::ReadBits(uint32_t& value, unsigned int bits) {
 
 		// If we've read to the end of the read buffer, reset the offset pointers.
 		if (_byte_offset >= _buffer.Size())

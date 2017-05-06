@@ -23,7 +23,7 @@ namespace IO {
 		// If opened in "Append" mode, seek to the end of the file.
 		if (_flags & std::fstream::app) {
 			_stream.seekg(0, std::ios_base::end);
-			_position = _stream.tellg();
+			_position = (size_t)_stream.tellg();
 		}
 
 	}
@@ -109,7 +109,6 @@ namespace IO {
 		else if (length > clength) {
 
 			// Seek to the desired length, write a null byte, and then seek back.
-			size_t prev_pos = _position;
 			_stream.seekg(-1 + length);
 			_stream.write("\0", 1);
 			_stream.seekg(_position);
@@ -171,7 +170,7 @@ namespace IO {
 		_stream.read((char*)buffer + offset * sizeof(Byte), length);
 
 		// Update the seek position.
-		size_t bytes_read = _stream.gcount();
+		size_t bytes_read = (size_t)_stream.gcount();
 		_position += bytes_read;
 
 		return bytes_read;
@@ -188,7 +187,7 @@ namespace IO {
 		_last_read = false;
 
 		// Write bytes to the stream from the buffer.
-		_stream.write((const char*)buffer, length);
+		_stream.write((const char*)buffer + offset, length);
 
 		// Update the sek position.
 		_position += length;
@@ -234,7 +233,7 @@ namespace IO {
 		_stream.seekg(offset, seek_origin);
 
 		// Adjust the seek position according to the difference.
-		_position += (_stream.tellg() - pos);
+		_position += (size_t)(_stream.tellg() - pos);
 
 		// Return the new position.
 		return _position;
