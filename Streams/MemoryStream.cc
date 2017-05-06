@@ -8,6 +8,8 @@
 
 namespace IO {
 
+	// Public methods
+
 	MemoryStream::MemoryStream() : MemoryStream(0) {}
 	MemoryStream::MemoryStream(size_t capacity) {
 
@@ -240,6 +242,22 @@ namespace IO {
 
 	}
 
+	// Protected methods
+
+	void MemoryStream::AllocateBytes(size_t bytes) {
+
+		// Calculate the required capacity. Note that the position may be greater than the length.
+		size_t required_capacity = _position + bytes;
+
+		// Increase buffer capacity if needed.
+		if (required_capacity > _capacity) {
+			size_t new_capacity = _capacity > 0 ? _capacity : 1;
+			while (required_capacity > new_capacity)
+				new_capacity *= 2;
+			Reserve(new_capacity);
+		}
+
+	}
 	Byte* MemoryStream::Buffer() {
 
 		return _buffer;
@@ -283,21 +301,6 @@ namespace IO {
 		if (_position > _length)
 			_position = _length;
 
-
-	}
-
-	void MemoryStream::AllocateBytes(size_t bytes) {
-
-		// Calculate the required capacity. Note that the position may be greater than the length.
-		size_t required_capacity = _position + bytes;
-
-		// Increase buffer capacity if needed.
-		if (required_capacity > _capacity) {
-			size_t new_capacity = _capacity > 0 ? _capacity : 1;
-			while (required_capacity > new_capacity)
-				new_capacity *= 2;
-			Reserve(new_capacity);
-		}
 
 	}
 

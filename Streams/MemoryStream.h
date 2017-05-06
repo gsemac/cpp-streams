@@ -53,22 +53,21 @@ namespace IO {
 		virtual bool CanWrite() const override;
 
 	protected:
-		bool _owns_buffer;
-		Byte* _buffer;
-		size_t _length;
-		size_t _capacity;
-		size_t _position;
-
-		// Expands the buffer to contain a specified number of additional bytes.
+		// Expands the buffer (if necessary) to be able to contain "bytes" additional bytes.
 		virtual void AllocateBytes(size_t bytes);
-
-	private:
 		// Returns the underlying Byte buffer.
 		virtual Byte* Buffer();
 		// Resizes the underlying Byte buffer. If the given capacity is less than the current capacity, the buffer size is not modified.
 		virtual void Reserve(size_t capacity);
 		// Resizes the underlying Byte buffer, and fills new memory with the given value. If the given capacity is less than the current capacity, the buffer is truncated.
 		virtual void Resize(size_t size, Byte value = 0);
+
+	private:
+		bool _owns_buffer;
+		Byte* _buffer;
+		size_t _length;
+		size_t _capacity;
+		size_t _position;
 
 	};
 

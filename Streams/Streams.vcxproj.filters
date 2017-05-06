@@ -16,7 +16,7 @@
     <Filter Include="Header Files\Exceptions">
       <UniqueIdentifier>{ad029385-5590-4655-b8f2-f00005cccebf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Exceptions">
+    <Filter Include="Source Files\Exceptions">
       <UniqueIdentifier>{91094b62-a5fd-4126-9f2e-f30393b78381}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -53,35 +53,32 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cc">
+    <ClCompile Include="Exception.cc">
+      <Filter>Source Files\Exceptions</Filter>
+    </ClCompile>
+    <ClCompile Include="BitReader.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BitWriter.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Buffer.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BufferedStream.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FileStream.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IO.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MemoryStream.cc">
-      <Filter>Resource Files</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Stream.cc">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FileStream.cc">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Exception.cc">
-      <Filter>Resource Files\Exceptions</Filter>
-    </ClCompile>
-    <ClCompile Include="BufferedStream.cc">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="IO.cc">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Buffer.cc">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BitWriter.cc">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BitReader.cc">
-      <Filter>Resource Files</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
