@@ -1,9 +1,9 @@
 #pragma once
-#include "Stream.h"
+#include "IStream.h"
 
 namespace IO {
 
-	class MemoryStream : public Stream {
+	class MemoryStream : public IStream {
 
 	public:
 		// Initializes a new instance of the MemoryStream class with an expandable capacity initialized to zero.
@@ -38,9 +38,9 @@ namespace IO {
 		// Closes the current stream and releases any resources (such as sockets and file handles) associated with the current stream.
 		virtual void Close() override;
 		// Reads the bytes from the current stream and writes them to another stream.
-		virtual void CopyTo(Stream& stream) override;
+		virtual void CopyTo(IStream& stream) override;
 		// Reads the bytes from the current stream and writes them to another stream, using a specified buffer size.
-		virtual void CopyTo(Stream& stream, size_t buffer_size) override;
+		virtual void CopyTo(IStream& stream, size_t buffer_size) override;
 		// Sets the position within the current stream to the specified value.
 		virtual size_t Seek(long long offset, SeekOrigin origin) override;
 		// Sets the position within the current stream to the specified value.

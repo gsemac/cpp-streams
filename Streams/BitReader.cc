@@ -9,7 +9,7 @@ namespace IO {
 
 	// Public methods
 
-	BitReader::BitReader(Stream& stream) :
+	BitReader::BitReader(IStream& stream) :
 		_buffer(8, true) {
 
 		_stream = &stream;
@@ -26,7 +26,7 @@ namespace IO {
 
 	}
 
-	Stream& BitReader::BaseStream() {
+	IStream& BitReader::BaseStream() {
 
 		// If there is no stream, throw an exception.
 		if (!_stream)

@@ -1,5 +1,5 @@
 #pragma once
-#include "Stream.h"
+#include "IStream.h"
 #include <fstream>
 
 namespace IO {
@@ -31,7 +31,7 @@ namespace IO {
 	};
 
 	// Provides a Stream for a file.
-	class FileStream : public Stream {
+	class FileStream : public IStream {
 
 	public:
 		// Initializes a new instance of the FileStream class with the specified path and creation mode.

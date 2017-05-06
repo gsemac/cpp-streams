@@ -5,8 +5,8 @@
 
 namespace IO {
 
-	BufferedSteam::BufferedSteam(Stream& stream) : BufferedSteam(stream, 4096) {}
-	BufferedSteam::BufferedSteam(Stream& stream, size_t buffer_size) {
+	BufferedSteam::BufferedSteam(IStream& stream) : BufferedSteam(stream, 4096) {}
+	BufferedSteam::BufferedSteam(IStream& stream, size_t buffer_size) {
 
 		_stream = &stream;
 		_buffer = nullptr;

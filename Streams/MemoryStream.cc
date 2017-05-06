@@ -170,7 +170,7 @@ namespace IO {
 		_buffer = nullptr;
 
 	}
-	void MemoryStream::CopyTo(Stream& stream) {
+	void MemoryStream::CopyTo(IStream& stream) {
 
 		// Throw an exception of the stream is not readable.
 		if (!CanRead())
@@ -185,9 +185,9 @@ namespace IO {
 		_position = _length;
 
 	}
-	void MemoryStream::CopyTo(Stream& stream, size_t buffer_size) {
+	void MemoryStream::CopyTo(IStream& stream, size_t buffer_size) {
 
-		Stream::CopyTo(stream, buffer_size);
+		IStream::CopyTo(stream, buffer_size);
 
 	}
 	size_t MemoryStream::Seek(long long offset, SeekOrigin origin) {

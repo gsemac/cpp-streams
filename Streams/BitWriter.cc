@@ -22,7 +22,7 @@ namespace IO {
 		AllocateBuffer(_buffer_size);
 
 	}
-	BitWriter::BitWriter(Stream& stream) : BitWriter() {
+	BitWriter::BitWriter(IStream& stream) : BitWriter() {
 
 		_stream = &stream;
 
@@ -38,7 +38,7 @@ namespace IO {
 
 	}
 
-	Stream& BitWriter::BaseStream() {
+	IStream& BitWriter::BaseStream() {
 
 		// If there is no stream, throw an exception.
 		if (!_stream)

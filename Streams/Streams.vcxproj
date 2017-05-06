@@ -126,7 +126,7 @@
     <ClInclude Include="FileStream.h" />
     <ClInclude Include="IO.h" />
     <ClInclude Include="MemoryStream.h" />
-    <ClInclude Include="Stream.h" />
+    <ClInclude Include="IStream.h" />
     <ClInclude Include="StreamWriter.h" />
   </ItemGroup>
   <ItemGroup>

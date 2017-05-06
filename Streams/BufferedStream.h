@@ -1,12 +1,12 @@
-#include "Stream.h"
+#include "IStream.h"
 
 namespace IO {
 
-	class BufferedSteam : public Stream {
+	class BufferedSteam : public IStream {
 
 	public:
-		BufferedSteam(Stream& stream);
-		BufferedSteam(Stream& stream, size_t buffer_size);
+		BufferedSteam(IStream& stream);
+		BufferedSteam(IStream& stream, size_t buffer_size);
 		~BufferedSteam();
 
 		// Gets the length in bytes of the stream.
@@ -46,7 +46,7 @@ namespace IO {
 
 	private:
 		// The underlying stream.
-		Stream* _stream;
+		IStream* _stream;
 		// The buffer, shared for both read/write operations.
 		Byte* _buffer;
 		// The size of the buffer.

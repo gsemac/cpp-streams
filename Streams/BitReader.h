@@ -1,5 +1,5 @@
 #pragma once
-#include "Stream.h"
+#include "IStream.h"
 #include "Buffer.h"
 #include <climits>
 #include <string>
@@ -9,11 +9,11 @@ namespace IO {
 	class BitReader {
 
 	public:
-		BitReader(Stream& stream);
+		BitReader(IStream& stream);
 		~BitReader();
 
 		// Exposes access to the underlying stream of the BitReader.
-		Stream& BaseStream();
+		IStream& BaseStream();
 
 		// Closes the current BitReader and the underlying stream.
 		void Close();
@@ -78,7 +78,7 @@ namespace IO {
 
 	private:
 		// The underlying stream.
-		Stream* _stream;
+		IStream* _stream;
 		// The buffer used for reads.
 		Buffer _buffer;
 		// The current byte offset in the read buffer.

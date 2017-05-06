@@ -15,7 +15,7 @@ namespace IO {
 		End
 	};
 
-	class Stream {
+	class IStream {
 		
 	public:
 		// When overridden in a derived class, gets the length in bytes of the stream.
@@ -37,9 +37,9 @@ namespace IO {
 		// Closes the current stream and releases any resources (such as sockets and file handles) associated with the current stream.
 		virtual void Close();
 		// Reads the bytes from the current stream and writes them to another stream.
-		virtual void CopyTo(Stream& stream);
+		virtual void CopyTo(IStream& stream);
 		// Reads the bytes from the current stream and writes them to another stream, using a specified buffer size.
-		virtual void CopyTo(Stream& stream, size_t buffer_size);
+		virtual void CopyTo(IStream& stream, size_t buffer_size);
 		// When overridden in a derived class, sets the position within the current stream.
 		virtual size_t Seek(long long offset, SeekOrigin origin) = 0;
 		// When overridden in a derived class, sets the position within the current stream.
@@ -52,9 +52,9 @@ namespace IO {
 		virtual bool CanWrite() const = 0;
 
 		// Writes a byte to the current position in the stream and advances the position within the stream by one byte.
-		virtual Stream& operator << (Byte byte);
+		virtual IStream& operator << (Byte byte);
 		// Reads a byte from the stream and advances the position within the stream by one byte, or returns fals if at the end of the stream.
-		virtual Stream& operator >> (Byte& byte);
+		virtual IStream& operator >> (Byte& byte);
 
 	};
 

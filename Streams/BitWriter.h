@@ -1,5 +1,5 @@
 #pragma once
-#include "Stream.h"
+#include "IStream.h"
 #include <climits>
 #include <stdint.h>
 #include <string>
@@ -9,11 +9,11 @@ namespace IO {
 	class BitWriter {
 
 	public:
-		BitWriter(Stream& stream);
+		BitWriter(IStream& stream);
 		~BitWriter();
 
 		// Gets the underlying stream of the BitWriter.
-		Stream& BaseStream();
+		IStream& BaseStream();
 
 		// Closes the current BitWriter and the underlying stream.
 		void Close();
@@ -75,7 +75,7 @@ namespace IO {
 
 	private:
 		// The underlying stream.
-		Stream* _stream;
+		IStream* _stream;
 		bool _owns_stream;
 		// The buffer used for writing.
 		Byte* _buffer;

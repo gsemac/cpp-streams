@@ -1,5 +1,5 @@
 #pragma once
-#include "Stream.h"
+#include "IStream.h"
 #include "Exception.h"
 #include <cassert>
 
@@ -7,7 +7,7 @@
 
 namespace IO {
 
-	size_t Stream::Read(void* buffer, size_t offset, size_t length) {
+	size_t IStream::Read(void* buffer, size_t offset, size_t length) {
 		
 		if (!CanRead())
 			throw NotSupportedException();
@@ -24,7 +24,7 @@ namespace IO {
 		return bytes_read;
 
 	}
-	void Stream::Write(const void* buffer, size_t offset, size_t length) {
+	void IStream::Write(const void* buffer, size_t offset, size_t length) {
 	
 		if (!CanWrite())
 			throw NotSupportedException();
@@ -35,8 +35,8 @@ namespace IO {
 			WriteByte(*(addr + i));
 
 	}
-	void Stream::Close() {}
-	void Stream::CopyTo(Stream& stream) {
+	void IStream::Close() {}
+	void IStream::CopyTo(IStream& stream) {
 		
 		if (!CanRead() || !stream.CanWrite())
 			throw NotSupportedException();
@@ -46,7 +46,7 @@ namespace IO {
 			stream.WriteByte(byte);
 
 	}
-	void Stream::CopyTo(Stream& stream, size_t buffer_size) {
+	void IStream::CopyTo(IStream& stream, size_t buffer_size) {
 		
 		// Throw an exception of the stream is not readable, or the output stream is not writeable.
 		if (!CanRead() || !stream.CanWrite())
@@ -65,14 +65,14 @@ namespace IO {
 
 	}
 
-	Stream& Stream::operator << (Byte byte) {
+	IStream& IStream::operator << (Byte byte) {
 
 		WriteByte(byte);
 
 		return *this;
 
 	}
-	Stream& Stream::operator >> (Byte& byte) {
+	IStream& IStream::operator >> (Byte& byte) {
 
 		ReadByte(byte);
 
