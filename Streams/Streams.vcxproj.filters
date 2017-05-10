@@ -74,7 +74,7 @@
     <ClCompile Include="MemoryStream.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Stream.cc">
+    <ClCompile Include="IStream.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
