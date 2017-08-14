@@ -247,11 +247,11 @@ namespace IO {
 		Byte* new_buffer = (Byte*)calloc(bytes, sizeof(Byte));
 
 		// If the buffer isn't empty, copy the contents of the old buffer into the new buffer.
-		if (_buffer && (_byte_offset > 0 || _bit_offset > 0))
+		if (_buffer != nullptr && (_byte_offset > 0 || _bit_offset > 0))
 			memcpy(new_buffer, _buffer, _byte_offset > 0 ? _byte_offset : 1);
 
 		// Free the old buffer (if it exists).
-		if (_buffer)
+		if (_buffer != nullptr)
 			free(_buffer);
 
 		// Apply the new buffer.
