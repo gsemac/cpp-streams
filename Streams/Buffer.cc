@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <algorithm>
+#include <cassert>
 
 namespace IO {
 
@@ -18,13 +19,25 @@ namespace IO {
 			_buffer = nullptr;
 
 	}
-	Buffer::~Buffer() {
+	Buffer::Buffer(const Buffer& other) :
+		Buffer(other.Size(), false) {
 
 		if (_buffer != nullptr)
-			free(_buffer);
+			memcpy(_buffer, other._buffer, _size);
 
-		_buffer = nullptr;
-		_size = 0;
+	}
+	Buffer::Buffer(Buffer&& other) {
+
+		_buffer = other._buffer;
+		_size = other._size;
+
+		other._buffer = nullptr;
+		other._size = 0;
+
+	}
+	Buffer::~Buffer() {
+
+		_freeBuffer();
 
 	}
 
@@ -32,7 +45,7 @@ namespace IO {
 
 		// We'll shift without wrapping. Memory "pulled in" from the edges will be zeroed-out.
 
-		if ((std::abs)(amount) >= _size)
+		if (static_cast<size_t>((std::abs)(amount)) >= _size)
 
 			// If the shift amount is greater than the size of the buffer, it's easier just to clear it.
 			Clear();
@@ -150,20 +163,73 @@ namespace IO {
 		_size = bytes;
 
 	}
+	void Buffer::Reserve(size_t bytes, bool zero) {
+
+		if (bytes <= _size)
+			return;
+
+		Resize(bytes, zero);
+
+	}
 	size_t Buffer::Size() const {
 
 		return _size;
 
 	}
-	Buffer::Byte* Buffer::Address() const {
+	Buffer::Byte* Buffer::Pointer() const {
 
 		return _buffer;
 
 	}
 
-	Buffer::Buffer::Byte& Buffer::operator[](size_t index) {
+	Buffer::Byte& Buffer::operator[](size_t index) {
+
+		assert(index < _size);
 
 		return *(_buffer + index);
+
+	}
+	Buffer& Buffer::operator=(const Buffer& other) {
+
+		if (this == &other)
+			return *this;
+
+		Resize(other.Size());
+		memcpy(_buffer, other._buffer, _size);
+
+		return *this;
+
+	}
+	Buffer& Buffer::operator=(Buffer&& other) {
+
+		if (this == &other)
+			return *this;
+
+		_freeBuffer();
+
+		_buffer = other._buffer;
+		_size = other._size;
+
+		other._buffer = nullptr;
+		other._size = 0;
+
+		return *this;
+
+	}
+	Buffer::operator Byte*() const {
+
+		return _buffer;
+
+	}
+
+
+	void Buffer::_freeBuffer() {
+
+		if (_buffer != nullptr)
+			free(_buffer);
+
+		_buffer = nullptr;
+		_size = 0;
 
 	}
 

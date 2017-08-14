@@ -9,6 +9,8 @@ namespace IO {
 
 	public:
 		Buffer(size_t bytes, bool zero = false);
+		Buffer(const Buffer& other);
+		Buffer(Buffer&& other);
 		~Buffer();
 
 		// Shifts the contents of the buffer by the given amount.
@@ -31,16 +33,23 @@ namespace IO {
 		void Reverse(size_t index, size_t length);
 		// Resizes the buffer to the given size, and copies the original memory to the new buffer.
 		void Resize(size_t bytes, bool zero = false);
+		// Resizes the buffer if it is smaller than the given size. If the given size is equal to or less than the current size, does nothimg.
+		void Reserve(size_t bytes, bool zero = false);
 		// Returns the size of the buffer in bytes.
-		size_t Size() const;		
+		size_t Size() const;
 		// Returns the address of the underlying memory segment.
-		Byte* Address() const;
+		Byte* Pointer() const;
 		// Returns the value of the byte at the given index.
-		Byte& operator[](size_t index);
+		Byte& operator[](size_t index);		
+		Buffer& operator=(const Buffer& other);
+		Buffer& operator=(Buffer&& other);
+		operator Byte*() const;
 
 	private:
 		Byte* _buffer;
 		size_t _size;
+
+		void _freeBuffer();
 
 	};
 

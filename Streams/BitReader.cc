@@ -143,7 +143,7 @@ namespace IO {
 		if (!ReadBits(valueRead, 1))
 			return false;
 
-		value = (bool)valueRead;
+		value = valueRead != 0;
 
 		return true;
 
@@ -343,7 +343,7 @@ namespace IO {
 	void BitReader::FillBuffer() {
 
 		// Read as much data from the stream as possible into 
-		_bytes_read += _stream->Read(_buffer.Address(), _bytes_read, _buffer.Size() - _bytes_read);
+		_bytes_read += _stream->Read(_buffer.Pointer(), _bytes_read, _buffer.Size() - _bytes_read);
 
 	}
 	void BitReader::ClearBuffer() {
